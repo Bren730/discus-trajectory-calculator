@@ -1,8 +1,13 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +24,15 @@ public class MainActivity extends AppCompatActivity {
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(R.string.welcome_message);
+    }
+
+    public void newAirResistanceModel(View view) {
+
+        Intent intent = new Intent(this, TrajectoryAnalysisActivity.class);
+        String message = "test";
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+
     }
 
     /**
