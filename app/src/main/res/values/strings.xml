@@ -3,4 +3,16 @@
     <string name="welcome_message">Hello, world!</string>
     <string name="recent_trainings">Recent trainings</string>
     <string name="start_new_training">Start new training</string>
+
+    <string name="release_speed">Release speed</string>
+    <string name="release_angle">Release angle</string>
+    <string name="angle_of_attack">Angle of attack</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="gravity">Gravity</string>
+    <string name="release_height">Release height</string>
+    <string name="delta_t">Δt</string>
+    <string name="air_density">Air density</string>
+    <string name="mass">Mass</string>
+    <string name="discus_diameter">Discus diameter</string>
+    <string name="discus_height">Discus height</string>
 </resources>

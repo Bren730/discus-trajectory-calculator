@@ -6,6 +6,9 @@ package nl.brendanspijkerman.discustrajectorycalculator;
 
 public class AirResistanceModel {
 
+    // The version of the model
+    public static int[] version = {0, 0, 1};
+
     public Variables variables = new Variables();
 
 }
