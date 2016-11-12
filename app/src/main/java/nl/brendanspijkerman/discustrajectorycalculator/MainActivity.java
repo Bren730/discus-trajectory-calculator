@@ -20,17 +20,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(R.string.welcome_message);
     }
 
     public void newAirResistanceModel(View view) {
 
         Intent intent = new Intent(this, TrajectoryAnalysisActivity.class);
-        String message = "test";
-        intent.putExtra(EXTRA_MESSAGE, message);
+        Variables variables = new Variables(20, 35, 0, 1.8);
+        intent.putExtra("variables", variables);
         startActivity(intent);
 
     }

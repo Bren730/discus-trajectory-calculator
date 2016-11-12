@@ -10,7 +10,13 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trajectory_analysis);
 
-        AirResistanceModel model = new AirResistanceModel();
+        setTitle(R.string.trajectory_analysis);
+
+        //Retrieve the variables object sent with the intent
+        Variables variables = (Variables) getIntent().getSerializableExtra("variables");
+
+        AirResistanceModel model = new AirResistanceModel(variables);
+        model.calculate();
 
     }
 
