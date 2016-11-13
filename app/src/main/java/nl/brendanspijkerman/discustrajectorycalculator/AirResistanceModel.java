@@ -59,6 +59,7 @@ public class AirResistanceModel {
         double deltaT = variables.deltaT;
 
         // Variables to store the newly generated data
+        // ArrayList is used because objects can be added dynamically
         ArrayList<Telemetry> data = new ArrayList<Telemetry>();
         double xMax = 0;
         double yMax = 0;

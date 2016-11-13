@@ -73,7 +73,7 @@ public class Variables implements Serializable {
         static double v0 = 23.6;
         // Standard release angle (deg)
         static double thetaRelease0 = 35;
-        static double thetaMotion0 = 35;
+        static double thetaMotion0 = thetaRelease0;
         // Standard attack angle (deg)
         static double thetaAttack0 = 0;
         static double thetaInclination0 = thetaRelease0 + thetaAttack0;
@@ -102,6 +102,62 @@ public class Variables implements Serializable {
         static double vWind = 0;
         // Default max simulation time (s)
         static double tMax = 30;
+
+    }
+
+    public static class max{
+
+        // Average gravity (m/s^2)
+        static double g = 9.83;
+        // Average air density (kg/m^3)
+        static double rho = 1.3;
+        // Average release speed (m/s)
+        static double v0 = 30;
+        // Standard release angle (deg)
+        static double thetaRelease0 = 89;
+        static double thetaMotion0 = thetaRelease0;
+        // Standard attack angle (deg)
+        static double thetaAttack0 = 90;
+        // Standard mass (kg)
+        static double m = 2.5;
+        // Standard discus diameter
+        static double discusD = 0.221;
+        // Standard discus height
+        static double discusH = 0.046;
+        // Average release height (m)
+        static double y0 = 2;
+        // Standard delta time interval (s)
+        static double deltaT = 0.05;
+        // Default wind speed
+        static double vWind = 20;
+
+    }
+
+    public static class min{
+
+        // Average gravity (m/s^2)
+        static double g = 9.76;
+        // Average air density (kg/m^3)
+        static double rho = 1.15;
+        // Average release speed (m/s)
+        static double v0 = 15;
+        // Standard release angle (deg)
+        static double thetaRelease0 = 0;
+        static double thetaMotion0 = thetaRelease0;
+        // Standard attack angle (deg)
+        static double thetaAttack0 = -90;
+        // Standard mass (kg)
+        static double m = 1;
+        // Standard discus diameter
+        static double discusD = 0.180;
+        // Standard discus height
+        static double discusH = 0.037;
+        // Average release height (m)
+        static double y0 = 1;
+        // Standard delta time interval (s)
+        static double deltaT = 0.005;
+        // Default wind speed
+        static double vWind = -20;
 
     }
 

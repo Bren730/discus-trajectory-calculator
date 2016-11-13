@@ -96,13 +96,23 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
 
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
+            double progressDouble = (double)progress / (double)seekBar.getMax();
+
             String tag = (String) seekBar.getTag();
 
             try {
+
                 Field field = Variables.class.getDeclaredField(tag);
+
                 try {
-                    field.set(variables, progress);
-                    double t = variables.v0;
+
+                    double min = Variables.min.class.getDeclaredField(tag).getDouble(variables);
+                    double max = Variables.max.class.getDeclaredField(tag).getDouble(variables);
+                    double diff = max - min;
+                    double val = min + (diff * progressDouble);
+
+
+                    field.set(variables, val);
 
                     AirResistanceModel model = new AirResistanceModel(variables);
                     Trajectory trajectory = model.calculateTrajectory();
@@ -116,16 +126,17 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
 
                     // Populate TextViews with the most important measurements
                     TextView tv = (TextView) findViewById(R.id.final_distance);
-                    tv.setText(String.valueOf( Math.round(trajectory.finalDistance * 100.0) / 100.0 ));
+//                    tv.setText(String.valueOf( Math.round(trajectory.finalDistance * 100.0) / 100.0 ) + " m/s");
+                    tv.setText(getString(R.string.meters, trajectory.finalDistance));
 
                     tv = (TextView) findViewById(R.id.release_speed);
-                    tv.setText(String.valueOf( Math.round(trajectory.variables.v0 * 100.0) / 100.0 ));
+                    tv.setText(getString(R.string.meters_per_second, trajectory.variables.v0));
 
                     tv = (TextView) findViewById(R.id.release_angle);
-                    tv.setText(String.valueOf( Math.round(trajectory.variables.thetaRelease0 * 100.0) / 100.0 ));
+                    tv.setText(getString(R.string.degrees, trajectory.variables.thetaRelease0));
 
                     tv = (TextView) findViewById(R.id.angle_of_attack);
-                    tv.setText(String.valueOf( Math.round(trajectory.variables.thetaAttack0 * 100.0) / 100.0 ));
+                    tv.setText(getString(R.string.degrees, trajectory.variables.thetaAttack0));
 
                 } catch (IllegalAccessException iae) {
                     throw new Error("No access to " + tag + " in Variables class");

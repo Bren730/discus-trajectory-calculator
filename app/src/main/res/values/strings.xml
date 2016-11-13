@@ -15,4 +15,9 @@
     <string name="discus_diameter">Discus diameter</string>
     <string name="discus_height">Discus height</string>
     <string name="final_distance">Final distance</string>
+
+    <!--Placeholder strings-->
+    <string name="meters">%1$.2f m</string>
+    <string name="meters_per_second">%1$.2f m/s</string>
+    <string name="degrees">%1$.2f°</string>
 </resources>
