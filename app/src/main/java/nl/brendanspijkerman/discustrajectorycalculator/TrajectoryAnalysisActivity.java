@@ -1,7 +1,10 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class TrajectoryAnalysisActivity extends AppCompatActivity {
 
@@ -16,7 +19,21 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
         Variables variables = (Variables) getIntent().getSerializableExtra("variables");
 
         AirResistanceModel model = new AirResistanceModel(variables);
-        model.calculate();
+        Trajectory trajectory = model.calculateTrajectory();
+
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.trajectory_graph);
+
+        TextView tv = (TextView) findViewById(R.id.final_distance);
+        tv.setText(String.valueOf( Math.round(trajectory.finalDistance * 100.0) / 100.0 ));
+
+        tv = (TextView) findViewById(R.id.release_speed);
+        tv.setText(String.valueOf( Math.round(trajectory.variables.v0 * 100.0) / 100.0 ));
+
+        tv = (TextView) findViewById(R.id.release_angle);
+        tv.setText(String.valueOf( Math.round(trajectory.variables.thetaRelease0 * 100.0) / 100.0 ));
+
+        tv = (TextView) findViewById(R.id.angle_of_attack);
+        tv.setText(String.valueOf( Math.round(trajectory.variables.thetaAttack0 * 100.0) / 100.0 ));
 
     }
 

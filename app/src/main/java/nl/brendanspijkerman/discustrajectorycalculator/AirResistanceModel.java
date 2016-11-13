@@ -20,7 +20,7 @@ public class AirResistanceModel {
 
     }
 
-    public void calculate() {
+    public Trajectory calculateTrajectory() {
 
         double v = variables.v0;
         double x = variables.x0;
@@ -145,6 +145,10 @@ public class AirResistanceModel {
             }
 
         }
+
+        Trajectory trajectory = new Trajectory(data, xMax, yMax, x, t, variables, "AirResistanceModel", version);
+
+        return  trajectory;
 
     }
 

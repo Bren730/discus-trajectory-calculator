@@ -28,7 +28,8 @@
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin">
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -42,6 +43,69 @@
 
                     <TextView
                         android:id="@+id/final_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0m"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="#000000"
+                        style="@style/h1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/release_speed"
+                        style="@style/h1"/>
+
+                    <TextView
+                        android:id="@+id/release_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0m"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="#000000"
+                        style="@style/h1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/release_angle"
+                        style="@style/h1"/>
+
+                    <TextView
+                        android:id="@+id/release_angle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0m"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="#000000"
+                        style="@style/h1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/angle_of_attack"
+                        style="@style/h1"/>
+
+                    <TextView
+                        android:id="@+id/angle_of_attack"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0m"
