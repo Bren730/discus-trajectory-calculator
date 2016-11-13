@@ -114,6 +114,19 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
 
                     Graph graph = new Graph(seekBar.getContext(), size.x, trajectory, (ImageView)findViewById(R.id.graph));
 
+                    // Populate TextViews with the most important measurements
+                    TextView tv = (TextView) findViewById(R.id.final_distance);
+                    tv.setText(String.valueOf( Math.round(trajectory.finalDistance * 100.0) / 100.0 ));
+
+                    tv = (TextView) findViewById(R.id.release_speed);
+                    tv.setText(String.valueOf( Math.round(trajectory.variables.v0 * 100.0) / 100.0 ));
+
+                    tv = (TextView) findViewById(R.id.release_angle);
+                    tv.setText(String.valueOf( Math.round(trajectory.variables.thetaRelease0 * 100.0) / 100.0 ));
+
+                    tv = (TextView) findViewById(R.id.angle_of_attack);
+                    tv.setText(String.valueOf( Math.round(trajectory.variables.thetaAttack0 * 100.0) / 100.0 ));
+
                 } catch (IllegalAccessException iae) {
                     throw new Error("No access to " + tag + " in Variables class");
                 }
