@@ -26,6 +26,9 @@ public class AirResistanceModel {
         double x = variables.x0;
         double y = variables.y0;
         double thetaRelease = variables.thetaRelease0;
+        // Make sure that the x and y components are recalculated each time
+        variables.vx0 = v * Math.cos(rad(thetaRelease));
+        variables.vy0 = v * Math.sin(rad(thetaRelease));
         double vx = variables.vx0;
         double vy = variables.vy0;
         double vWind = variables.vWind;
@@ -35,6 +38,9 @@ public class AirResistanceModel {
         double rho = variables.rho;
         double m = variables.m;
         double thetaAttack = variables.thetaAttack0;
+        // Make sure that the angles at t0 are recalculated each time
+        variables.thetaMotion0 = thetaRelease;
+        variables.thetaInclination0 = thetaRelease + thetaAttack;
         double thetaMotion = variables.thetaMotion0;
         double thetaInclination = variables.thetaInclination0;
         double thetaMotionRel = deg(Math.atan(vy / vRelX));

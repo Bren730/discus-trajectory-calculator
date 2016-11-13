@@ -141,6 +141,7 @@
 
                 <SeekBar
                     android:id="@+id/v0"
+                    android:tag="v0"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -158,7 +159,8 @@
                     android:text = "@string/release_angle"/>
 
                 <SeekBar
-                    android:id="@+id/theta_0"
+                    android:id="@+id/theta0"
+                    android:tag="thetaRelease0"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -176,7 +178,8 @@
                     android:text = "@string/angle_of_attack"/>
 
                 <SeekBar
-                    android:id="@+id/theta_attack"
+                    android:id="@+id/thetaAttack"
+                    android:tag="thetaAttack0"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -194,7 +197,8 @@
                     android:text = "@string/wind_speed"/>
 
                 <SeekBar
-                    android:id="@+id/v_wind"
+                    android:id="@+id/vWind"
+                    android:tag="vWind"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -213,6 +217,7 @@
 
                 <SeekBar
                     android:id="@+id/g"
+                    android:tag="g"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -231,6 +236,7 @@
 
                 <SeekBar
                     android:id="@+id/y0"
+                    android:tag="y0"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -248,7 +254,8 @@
                     android:text = "@string/delta_t"/>
 
                 <SeekBar
-                    android:id="@+id/delta_t"
+                    android:id="@+id/deltaT"
+                    android:tag="deltaT"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -267,6 +274,7 @@
 
                 <SeekBar
                     android:id="@+id/rho"
+                    android:tag="rho"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -285,6 +293,7 @@
 
                 <SeekBar
                     android:id="@+id/m"
+                    android:tag="m"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -302,7 +311,8 @@
                     android:text = "@string/discus_diameter"/>
 
                 <SeekBar
-                    android:id="@+id/discus_diameter"
+                    android:id="@+id/discusD"
+                    android:tag="discusD"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
@@ -320,7 +330,8 @@
                     android:text = "@string/discus_height"/>
 
                 <SeekBar
-                    android:id="@+id/discus_height"
+                    android:id="@+id/discusH"
+                    android:tag="discusH"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
