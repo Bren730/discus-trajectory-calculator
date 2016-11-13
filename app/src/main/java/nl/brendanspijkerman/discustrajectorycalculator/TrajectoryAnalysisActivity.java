@@ -14,10 +14,13 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static java.security.AccessController.getContext;
 
 public class TrajectoryAnalysisActivity extends AppCompatActivity {
 
@@ -36,6 +39,7 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
 
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.trajectory_graph);
 
+        // Populate TextViews with the most important measurements
         TextView tv = (TextView) findViewById(R.id.final_distance);
         tv.setText(String.valueOf( Math.round(trajectory.finalDistance * 100.0) / 100.0 ));
 
@@ -48,44 +52,12 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.angle_of_attack);
         tv.setText(String.valueOf( Math.round(trajectory.variables.thetaAttack0 * 100.0) / 100.0 ));
 
-        ImageView view = (ImageView) findViewById(R.id.graph);
-
+        // Get the display's width in pixels
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
-        int width = size.x;
-        double scale = width / trajectory.xMax;
-        int height = (int)(trajectory.yMax * scale);
-
-        view.setMaxWidth(width);
-        view.setMaxHeight(height);
-
-        view.setMaxHeight(height);
-
-        Path path = new Path();
-
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(2);
-
-        ShapeDrawable graph = new ShapeDrawable(new PathShape(path, width, height));
-        graph.getPaint().set(paint);
-
-        path.moveTo((float)trajectory.data.get(0).x, (float)trajectory.data.get(0).y);
-
-        for (int i = 0; i < trajectory.data.size() - 1; i++) {
-
-            path.lineTo((float)(trajectory.data.get(i + 1).x * scale), (float)(height - (trajectory.data.get(i + 1).y * scale)));
-
-        }
-
-        view.setBackground(graph);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-        params.width = width;
-        params.height = height;
-        view.setLayoutParams(params);
+        Graph graph = new Graph(this, size.x, trajectory, (ImageView)findViewById(R.id.graph));
 
     }
 
