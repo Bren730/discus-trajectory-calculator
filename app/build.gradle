@@ -40,4 +40,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.+'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.clans:fab:1.6.4'
 }

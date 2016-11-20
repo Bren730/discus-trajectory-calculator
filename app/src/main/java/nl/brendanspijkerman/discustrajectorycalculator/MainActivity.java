@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void newAirResistanceModel(View view) {
+    public void newTrajectoryAnalyzer(View view) {
 
         Intent intent = new Intent(this, TrajectoryAnalysisActivity.class);
         Variables variables = new Variables(20, 35, 0, 1.8);

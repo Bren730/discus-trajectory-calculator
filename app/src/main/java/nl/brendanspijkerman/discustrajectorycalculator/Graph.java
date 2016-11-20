@@ -45,10 +45,15 @@ public class Graph {
         view.getAxisRight().setDrawLabels(false);
         view.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
+        // Color styling y-axis
         view.getAxisLeft().setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
         view.getAxisLeft().setGridColor(context.getResources().getColor(R.color.colorAccent));
+        view.getAxisLeft().setTextColor(context.getResources().getColor(R.color.colorAccent));
+
+        // Color styling x-axis
         view.getXAxis().setGridColor(context.getResources().getColor(R.color.colorAccent));
         view.getXAxis().setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
+        view.getXAxis().setTextColor(context.getResources().getColor(R.color.colorAccent));
 
         LineData lineData = new LineData();
 
@@ -74,6 +79,7 @@ public class Graph {
 
             dataSet.setLineWidth(2);
             dataSet.setDrawCircles(false);
+            dataSet.setDrawValues(false);
             lineData.addDataSet(dataSet);
 
             index++;

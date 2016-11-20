@@ -18,4 +18,17 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
+    <style name="FabButton">
+        <item name="menu_colorNormal">@color/colorPrimary</item>
+        <item name="menu_colorPressed">@color/colorPrimaryLight</item>
+        <item name="menu_colorRipple">@color/colorPrimaryLight2</item>
+        <item name="fab_colorNormal">@color/colorPrimary</item>
+        <item name="fab_colorPressed">@color/colorPrimaryLight</item>
+        <item name="fab_colorRipple">@color/colorPrimaryLight2</item>
+    </style>
+
+    <style name="FabButton.Small">
+        <item name="fab_size">mini</item>
+    </style>
+
 </resources>

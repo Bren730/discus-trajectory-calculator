@@ -20,4 +20,10 @@
     <string name="meters">%1$.2f m</string>
     <string name="meters_per_second">%1$.2f m/s</string>
     <string name="degrees">%1$.2f°</string>
+
+    <!--Menu item strings-->
+    <string name="new_training">New Training</string>
+    <string name="add_athlete">Add Athlete</string>
+    <string name="trajectory_analyzer">Trajectory Analyzer</string>
+
 </resources>
