@@ -21,7 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import static java.security.AccessController.getContext;
 
@@ -122,11 +125,13 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
                     Point size = new Point();
                     display.getSize(size);
 
-                    Graph graph = new Graph(seekBar.getContext(), size.x, trajectory, (ImageView)findViewById(R.id.graph));
+                    ArrayList<Trajectory> trajectories = new ArrayList<>();
+                    trajectories.add(trajectory);
+
+                    Graph graph = new Graph(seekBar.getContext(), size.x, trajectories, (LineChart) findViewById(R.id.chart));
 
                     // Populate TextViews with the most important measurements
                     TextView tv = (TextView) findViewById(R.id.final_distance);
-//                    tv.setText(String.valueOf( Math.round(trajectory.finalDistance * 100.0) / 100.0 ) + " m/s");
                     tv.setText(getString(R.string.meters, trajectory.finalDistance));
 
                     tv = (TextView) findViewById(R.id.release_speed);

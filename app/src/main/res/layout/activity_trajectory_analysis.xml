@@ -18,10 +18,12 @@
             android:orientation="vertical"
             android:layout_marginTop="@dimen/activity_vertical_margin">
 
-            <ImageView
-                android:id="@+id/graph"
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
                 android:layout_width="match_parent"
-                android:layout_height="150dp" />
+                android:layout_height="150dp">
+
+            </com.github.mikephil.charting.charts.LineChart>
 
             <LinearLayout
                 android:layout_width="match_parent"
