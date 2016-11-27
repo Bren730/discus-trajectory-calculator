@@ -150,6 +150,10 @@
 
         </LinearLayout>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -162,7 +166,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                 android:layout_width="120dp"
@@ -181,7 +186,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -200,7 +206,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -219,45 +226,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:text = "@string/wind_speed"/>
-
-                <SeekBar
-                    android:id="@+id/vWind"
-                    android:tag="vWind"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:text = "@string/gravity"/>
-
-                <SeekBar
-                    android:id="@+id/g"
-                    android:tag="g"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -276,7 +246,48 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text = "@string/wind_speed"/>
+
+                <SeekBar
+                    android:id="@+id/vWind"
+                    android:tag="vWind"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                style="@style/slider">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text = "@string/gravity"/>
+
+                <SeekBar
+                    android:id="@+id/g"
+                    android:tag="g"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -295,7 +306,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -314,7 +326,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -333,7 +346,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -352,7 +366,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                style="@style/slider">
 
                 <TextView
                     android:layout_width="120dp"
@@ -369,6 +384,8 @@
             </LinearLayout>
 
         </LinearLayout>
+
+    </ScrollView>
 
     </LinearLayout>
 

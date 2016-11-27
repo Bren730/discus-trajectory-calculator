@@ -22,7 +22,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false">
+        android:clipToPadding="false">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:clipToPadding="false"
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
@@ -197,7 +198,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/add_athlete"
             style="@style/FabButton.Small"
-            fab:fab_label="@string/add_athlete"/>
+            fab:fab_label="@string/add_athlete"
+            android:onClick="newAthlete"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:layout_width="wrap_content"

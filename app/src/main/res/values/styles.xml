@@ -20,15 +20,26 @@
 
     <style name="FabButton">
         <item name="menu_colorNormal">@color/colorPrimary</item>
-        <item name="menu_colorPressed">@color/colorPrimaryLight</item>
+        <item name="menu_colorPressed">@color/colorPrimaryDark</item>
         <item name="menu_colorRipple">@color/colorPrimaryLight2</item>
+
         <item name="fab_colorNormal">@color/colorPrimary</item>
-        <item name="fab_colorPressed">@color/colorPrimaryLight</item>
+        <item name="fab_colorPressed">@color/colorPrimaryDark</item>
         <item name="fab_colorRipple">@color/colorPrimaryLight2</item>
     </style>
 
     <style name="FabButton.Small">
         <item name="fab_size">mini</item>
+    </style>
+
+    <style name="slider">
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="EditTextTheme">
+        <item name="colorControlNormal">@color/colorAccentLight</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
 </resources>

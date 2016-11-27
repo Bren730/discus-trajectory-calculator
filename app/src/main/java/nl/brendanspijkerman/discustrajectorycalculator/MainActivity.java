@@ -31,6 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void newAthlete(View view) {
+
+        Intent intent = new Intent(this, NewAthleteActivity.class);
+//        Variables variables = new Variables(20, 35, 0, 1.8);
+//        intent.putExtra("variables", variables);
+        startActivity(intent);
+
+    }
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.

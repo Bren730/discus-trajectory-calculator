@@ -1,8 +1,10 @@
 <resources>
+    <!--Title bar strings-->
     <string name="app_name">Discus Trajectory Calculator</string>
-    <string name="trajectory_analysis">Trajectory analysis</string>
+    <string name="title_trajectory_analyzer">Trajectory analyzer</string>
+    <string name="title_new_athlete">Add new athlete</string>
 
-    <!--Variable names-->
+    <!--Model variable names-->
     <string name="release_speed">Release speed</string>
     <string name="release_angle">Release angle</string>
     <string name="angle_of_attack">Angle of attack</string>
@@ -25,5 +27,19 @@
     <string name="new_training">New Training</string>
     <string name="add_athlete">Add Athlete</string>
     <string name="trajectory_analyzer">Trajectory Analyzer</string>
+    <string name="next">Next</string>
+
+    <!--New athlete fields-->
+    <string name="new_athlete_name">Name</string>
+    <string name="new_athlete_height">Height (m)</string>
+    <string name="new_athlete_class">Class</string>
+
+    <string-array name="new_athlete_classes">
+        <item>Women B</item>
+        <item>Women A</item>
+        <item>Boys B</item>
+        <item>Boys A</item>
+        <item>Men</item>
+    </string-array>
 
 </resources>

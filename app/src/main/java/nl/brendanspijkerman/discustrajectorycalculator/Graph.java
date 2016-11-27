@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -45,15 +46,22 @@ public class Graph {
         view.getAxisRight().setDrawLabels(false);
         view.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        // Color styling y-axis
+        // Styling y-axis
         view.getAxisLeft().setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
         view.getAxisLeft().setGridColor(context.getResources().getColor(R.color.colorAccent));
+        view.getAxisLeft().setDrawGridLines(true);
         view.getAxisLeft().setTextColor(context.getResources().getColor(R.color.colorAccent));
+        view.getAxisLeft().setAxisMinimum(0);
+        view.getAxisLeft().setAxisMaximum(20);
+        view.getAxisLeft().setLabelCount(4);
 
-        // Color styling x-axis
+        // Styling x-axis
         view.getXAxis().setGridColor(context.getResources().getColor(R.color.colorAccent));
         view.getXAxis().setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
         view.getXAxis().setTextColor(context.getResources().getColor(R.color.colorAccent));
+        view.getXAxis().setAxisMinimum(0);
+        view.getXAxis().setAxisMaximum(90);
+        view.getXAxis().setLabelCount(10);
 
         LineData lineData = new LineData();
 
@@ -70,6 +78,7 @@ public class Graph {
             }
 
             LineDataSet dataSet = new LineDataSet(entries, "Throw " + (index + 1));
+            dataSet.setMode(LineDataSet.Mode.LINEAR);
 
             if (index == 0) {
                 dataSet.setColor(context.getResources().getColor(R.color.colorPrimary));
@@ -78,7 +87,12 @@ public class Graph {
             }
 
             dataSet.setLineWidth(2);
-            dataSet.setDrawCircles(false);
+
+            dataSet.setDrawCircles(true);
+            dataSet.setCircleRadius(1);
+            dataSet.setCircleColor(context.getResources().getColor(R.color.colorPrimary));
+            dataSet.setDrawCircleHole(false);
+
             dataSet.setDrawValues(false);
             lineData.addDataSet(dataSet);
 
@@ -87,80 +101,8 @@ public class Graph {
         }
 
         view.setData(lineData);
+        //view.animateX((int)(trajectories.get(0).flightTime * 1000), Easing.EasingOption.Linear);
         view.invalidate();
-
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
-//
-//        lineThickness = dpToPx(1, metrics);
-//        xAxisMargin = dpToPx(30, metrics);
-//        yAxisMargin = dpToPx(30, metrics);
-//
-//        // Get the display's width in pixels
-//        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//        Point size = new Point();
-//        display.getSize(size);
-//
-//        // Determine the scale of the graph in px/m
-//        double scale = (width - xAxisMargin) / trajectory.xMax;
-//        // Add stroke width to height to avoid clipping the top of the trajectory
-//        int height = (int)(trajectory.yMax * scale + lineThickness + yAxisMargin);
-//
-//        // Set the height of the ImageView element
-//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-//        params.width = width;
-//        params.height = height;
-//        view.setLayoutParams(params);
-//
-//        // Create the stroke style
-//        Paint paint = new Paint();
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setColor(context.getResources().getColor(R.color.colorAccent));
-//        paint.setStrokeWidth(lineThickness);
-//
-//        // Create a new path and set the first point to the first point stored in trajectory.data
-//        Path discusPath = new Path();
-//
-//        discusPath.moveTo((float)(trajectory.data.get(0).x * scale + xAxisMargin), (float)(height - (trajectory.data.get(0).y * scale) - yAxisMargin));
-//
-//        // Create a new ShapeDrawable that will be set as the background of the ImageView
-//        ShapeDrawable graph = new ShapeDrawable(new PathShape(discusPath, width, height));
-//        graph.getPaint().set(paint);
-//
-//        // For each point in trajectory.data, draw a line
-//        for (int i = 0; i < trajectory.data.size() - 1; i++) {
-//
-//            discusPath.lineTo((float)(trajectory.data.get(i + 1).x * scale + xAxisMargin), (float)(height - (trajectory.data.get(i + 1).y * scale) - yAxisMargin));
-//
-//        }
-//
-//        // Create the stroke style
-//        Paint colorPrimaryPaint = new Paint();
-//        colorPrimaryPaint.setStyle(Paint.Style.STROKE);
-//        colorPrimaryPaint.setColor(context.getResources().getColor(R.color.colorPrimary));
-//        colorPrimaryPaint.setStrokeWidth(lineThickness);
-//
-////        graph.getPaint().set(colorPrimaryPaint);
-//        Path axes = new Path();
-//        axes.moveTo(xAxisMargin, 0);
-//        ShapeDrawable axesDrawable = new ShapeDrawable(new PathShape(axes, width, height));
-//        axes.lineTo(xAxisMargin, height - yAxisMargin);
-//        axes.lineTo(width, height - yAxisMargin);
-//
-//        axesDrawable.getPaint().set(colorPrimaryPaint);
-//
-//        Bitmap combined = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-//        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(combined);
-//
-//        graph.draw(canvas);
-//        canvas.drawBitmap(output, 0, 0, null);
-//
-////        ImageView view2 = new ImageView(context);
-//
-//        // Set the ShapeDrawable as the background of the ImageView
-//        view.setImageBitmap(output);
 
     }
 
@@ -171,4 +113,5 @@ public class Graph {
         return px;
 
     }
+
 }

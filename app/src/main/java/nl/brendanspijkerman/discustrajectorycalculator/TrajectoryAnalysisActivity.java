@@ -37,7 +37,7 @@ public class TrajectoryAnalysisActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trajectory_analysis);
 
-        setTitle(R.string.trajectory_analysis);
+        setTitle(R.string.trajectory_analyzer);
 
         //Retrieve the variables object sent with the intent
         variables = (Variables) getIntent().getSerializableExtra("variables");
