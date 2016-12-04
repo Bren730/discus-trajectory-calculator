@@ -28,13 +28,15 @@
             android:name="android.support.v4.content.FileProvider"
             android:authorities="nl.brendanspijkerman.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            android:readPermission="nl.brendanspijkerman.fileprovider.READ">
 
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths">
 
             </meta-data>
 
         </provider>
+
     </application>
 
 </manifest>
