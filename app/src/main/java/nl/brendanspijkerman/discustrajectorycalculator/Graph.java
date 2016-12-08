@@ -88,10 +88,10 @@ public class Graph {
 
             dataSet.setLineWidth(2);
 
-            dataSet.setDrawCircles(true);
-            dataSet.setCircleRadius(1);
-            dataSet.setCircleColor(context.getResources().getColor(R.color.colorPrimary));
-            dataSet.setDrawCircleHole(false);
+            dataSet.setDrawCircles(false);
+//            dataSet.setCircleRadius(1);
+//            dataSet.setCircleColor(context.getResources().getColor(R.color.colorPrimary));
+//            dataSet.setDrawCircleHole(false);
 
             dataSet.setDrawValues(false);
             lineData.addDataSet(dataSet);

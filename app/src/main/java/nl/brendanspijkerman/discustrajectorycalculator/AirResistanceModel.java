@@ -10,7 +10,7 @@ import java.util.Objects;
 public class AirResistanceModel {
 
     // The version of the model
-    public static int[] version = {0, 0, 1};
+    public static int[] version = {0, 1, 0};
 
     Variables variables;
 
@@ -262,23 +262,22 @@ public class AirResistanceModel {
 
         }
 
-        // Diameter of the flat disc in the centre of the discus, static for all discuses
-        double centreDiscLength = 0.0535;
-        // The projected area of the centre part of the discus
-        double centreSurfaceArea = centreDiscLength * height;
-
-        // The taper of the discus means the area of the diagonal part would be 0.5 * diagonalWidth * height
-        // Both sides of the discus have this taper, resulting in a frontal surface area of diagonalWidth * height + centreSurfaceArea
-        double diagonalWidth = (diameter - centreDiscLength);
-        double aMin = diagonalWidth * height + centreSurfaceArea;
-
-        // Bottom surface area is simply the surface area of a circle with radius 0.5 * diameter
+        // Max surface area is simply the surface area of a circle with radius 0.5 * diameter
         double aMax = Math.PI * Math.pow((diameter / 2), 2);
 
-        // The attack angle is in degrees. At 0 degrees it is cDMin, at 90 it is cDMax
-        double perc = thetaAttack / 90;
+        // Polynomial components (obtained through Excel)
+        double polynomial5 = -0.000000000734490808986996000000 * Math.pow(thetaAttack, 5);
+        double polynomial4 = 0.000000196292760925362000000000 * Math.pow(thetaAttack, 4);
+        double polynomial3 = -0.000020085728567986700000000000 * Math.pow(thetaAttack, 3);
+        double polynomial2 = 0.000865257696037958000000000000 * Math.pow(thetaAttack, 2);
+        double polynomial1 = -0.001000632147082570000000000000 * thetaAttack;
+        double polynomial0 = 0.181257282109542000000000000000;
 
-        double a = perc * (aMax - aMin) + aMin;
+        // Calculate Area Coefficient with polynomial function
+        double Ca = polynomial5 + polynomial4 + polynomial3 + polynomial2 + polynomial1 + polynomial0;
+
+        // Calculate area based on max surface area
+        double a = aMax * Ca;
 
         // Surface area cannot be negative. Return the absolute value
         return Math.abs(a);
