@@ -67,7 +67,7 @@
                         android:hint="@string/new_athlete_name"
                         android:inputType="textCapWords"
                         style="@style/inputText"
-                        android:theme="@style/EditTextTheme"/>
+                        android:theme="@style/EditTextTheme" />
 
                 </LinearLayout>
 
@@ -78,16 +78,15 @@
                     style="@style/inputWrapper">
 
                     <ImageView
-                        android:src="@drawable/ruler"
-                        android:rotation="90"
+                        android:src="@drawable/calendar"
                         style="@style/inputIcon"/>
 
-                    <EditText
-                        android:id="@+id/new_athlete_height"
-                        android:hint="@string/new_athlete_height"
-                        android:inputType="numberDecimal"
+                    <TextView
+                        android:id="@+id/new_athlete_birthday"
+                        android:hint="@string/new_athlete_birthday"
                         style="@style/inputText"
-                        android:theme="@style/EditTextTheme"/>
+                        android:theme="@style/EditTextTheme"
+                        android:onClick="openDatePicker"/>
 
                 </LinearLayout>
 
@@ -97,19 +96,71 @@
                     android:orientation="horizontal"
                     style="@style/inputWrapper">
 
-                    <ImageView
-                        android:src="@drawable/adjust"
-                        android:layout_gravity="center_vertical"
-                        style="@style/inputIcon"/>
-
-                    <Spinner
-                        android:id="@+id/new_athlete_class"
-                        android:layout_width="match_parent"
+                    <RadioGroup
+                        android:id="@+id/new_athlete_sex"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:entries="@array/new_athlete_classes"
-                        style="@style/inputText"/>
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/new_athlete_sex_male"
+                            android:layout_marginRight="16dp"
+                            style="@style/inputText"
+                            android:layout_marginLeft="0dp"/>
+                            <!--style="@style/inputText"-->
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/new_athlete_sex_female"
+                            style="@style/inputText" />
+                            <!--style="@style/inputText"-->
+
+                    </RadioGroup>
 
                 </LinearLayout>
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--style="@style/inputWrapper">-->
+
+                    <!--<ImageView-->
+                        <!--android:src="@drawable/ruler"-->
+                        <!--android:rotation="90"-->
+                        <!--style="@style/inputIcon"/>-->
+
+                    <!--<EditText-->
+                        <!--android:id="@+id/new_athlete_height"-->
+                        <!--android:hint="@string/new_athlete_height"-->
+                        <!--android:inputType="numberDecimal"-->
+                        <!--style="@style/inputText"-->
+                        <!--android:theme="@style/EditTextTheme"/>-->
+
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--style="@style/inputWrapper">-->
+
+                    <!--<ImageView-->
+                        <!--android:src="@drawable/adjust"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--style="@style/inputIcon"/>-->
+
+                    <!--<Spinner-->
+                        <!--android:id="@+id/new_athlete_class"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:entries="@array/new_athlete_classes"-->
+                        <!--style="@style/inputText"/>-->
+
+                <!--</LinearLayout>-->
 
             </LinearLayout>
 

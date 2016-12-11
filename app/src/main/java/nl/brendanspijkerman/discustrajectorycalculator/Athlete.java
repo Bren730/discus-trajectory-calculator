@@ -1,19 +1,11 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
-import android.content.Context;
-import android.icu.util.Output;
+import android.net.Uri;
 
-import com.google.gson.Gson;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.net.URI;
+import java.util.Calendar;
+import java.util.UUID;
+
+import nl.brendanspijkerman.discustrajectorycalculator.model.Sex;
 
 /**
  * Created by Brendan on 27-11-2016.
@@ -21,23 +13,63 @@ import java.net.URI;
 
 public class Athlete {
 
-    // AtomicInteger used for unique id creation
-    private static AtomicInteger nextId = new AtomicInteger();
-
     public String name;
-    public int id;
+    public UUID id;
+
+    public Calendar birthday;
+
+    public Sex sex;
+
+    public Uri photoUri;
+
     public String uniqueName;
-    public float height;
     public String throwingClass;
 
-    Athlete(String _name, float _height, String _throwingClass) {
+    Athlete(String _name) {
 
         this.name = _name;
-        this.height = _height;
-        this.throwingClass = _throwingClass;
-        this.id = nextId.incrementAndGet();
+        this.id = UUID.randomUUID();
 
-        this.uniqueName = this.name + "_" + Integer.toString(this.id);
+        this.uniqueName = this.name + "_" + this.id.toString();
+
+    }
+
+    Athlete(String _name, Calendar _birthday) {
+
+        this.name = _name;
+        this.id = UUID.randomUUID();
+
+        this.birthday = _birthday;
+
+        this.uniqueName = this.name + "_" + this.id.toString();
+
+    }
+
+    Athlete(String _name, Calendar _birthday, Sex _sex) {
+
+        this.name = _name;
+        this.id = UUID.randomUUID();
+
+        this.birthday = _birthday;
+
+        this.sex = _sex;
+
+        this.uniqueName = this.name + "_" + this.id.toString();
+
+    }
+
+    Athlete(String _name, Calendar _birthday, Sex _sex, Uri _photoUri) {
+
+        this.name = _name;
+        this.id = UUID.randomUUID();
+
+        this.birthday = _birthday;
+
+        this.sex = _sex;
+
+        this.photoUri = _photoUri;
+
+        this.uniqueName = this.name + "_" + this.id.toString();
 
     }
 

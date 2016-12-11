@@ -33,6 +33,10 @@
     <string name="new_athlete_name">Name</string>
     <string name="new_athlete_height">Height (m)</string>
     <string name="new_athlete_class">Class</string>
+    <string name="new_athlete_sex">Sex</string>
+    <string name="new_athlete_sex_male">Male</string>
+    <string name="new_athlete_sex_female">Female</string>
+    <string name="new_athlete_birthday">Birthday</string>
 
     <string-array name="new_athlete_classes">
         <item>Women B</item>
