@@ -206,7 +206,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/new_training"
             style="@style/FabButton.Small"
-            fab:fab_label="New Training"/>
+            fab:fab_label="New Training"
+            android:onClick="newTraining"/>
 
     </com.github.clans.fab.FloatingActionMenu>
 
