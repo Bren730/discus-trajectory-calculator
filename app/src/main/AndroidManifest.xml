@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TrajectoryAnalysisActivity" />
-        <activity android:name=".NewAthleteActivity"></activity>
+        <activity android:name=".NewAthleteActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -30,13 +30,12 @@
             android:exported="false"
             android:grantUriPermissions="true"
             android:readPermission="nl.brendanspijkerman.fileprovider.READ">
-
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths">
-
-            </meta-data>
-
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
+        <activity android:name=".activity.DiscusTrackerActivity"></activity>
     </application>
 
 </manifest>

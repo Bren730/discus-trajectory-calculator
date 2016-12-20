@@ -233,6 +233,7 @@ public class NewAthleteActivity extends AppCompatActivity {
             }
 
             Storage storage = new Storage(this);
+
             try {
 
                 Athletes athletes = storage.loadAthletes();
