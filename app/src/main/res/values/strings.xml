@@ -37,6 +37,7 @@
     <string name="new_athlete_sex_male">Male</string>
     <string name="new_athlete_sex_female">Female</string>
     <string name="new_athlete_birthday">Birthday</string>
+    <string name="new_athlete_add_athlete">Add athlete</string>
 
     <string-array name="new_athlete_classes">
         <item>Women B</item>

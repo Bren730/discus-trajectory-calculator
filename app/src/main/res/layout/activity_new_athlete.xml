@@ -171,7 +171,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/next"
+        android:text="@string/new_athlete_add_athlete"
         android:onClick="clickNext"/>
 
 </LinearLayout>

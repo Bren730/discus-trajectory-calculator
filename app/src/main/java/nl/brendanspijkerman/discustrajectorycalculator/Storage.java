@@ -1,8 +1,11 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,7 +64,9 @@ public class Storage {
 
     public boolean saveAthletes(Athletes athletes) {
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Uri.class, new UriSerializer())
+                .create();
 
         FileOutputStream outStream;
         FileInputStream inStream;
@@ -96,14 +101,18 @@ public class Storage {
         File file = new File(mContext.getExternalFilesDir("athletes"), ("athletes" + extension ));
 
         try {
+
             FileInputStream fin = new FileInputStream(file);
             String ret = convertStreamToString(fin);
             //Make sure you close all streams.
             fin.close();
 
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Uri.class, new UriDeserializer())
+                    .create();
 
             Athletes athletes = gson.fromJson(ret, Athletes.class);
+            int b = 1;
             return athletes;
 
         } catch (FileNotFoundException e) {
@@ -115,7 +124,6 @@ public class Storage {
             return null;
 
         }
-
 
     }
 

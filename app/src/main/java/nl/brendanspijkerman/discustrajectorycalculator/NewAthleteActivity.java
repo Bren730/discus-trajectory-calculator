@@ -238,6 +238,7 @@ public class NewAthleteActivity extends AppCompatActivity {
                 Athletes athletes = storage.loadAthletes();
                 athletes.addAthlete(athlete);
                 storage.saveAthletes(athletes);
+                finish();
 
             } catch (Exception ex) {
 
