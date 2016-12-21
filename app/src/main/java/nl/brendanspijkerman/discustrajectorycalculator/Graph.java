@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -41,27 +42,34 @@ public class Graph {
 
     Graph (Context context, int width, ArrayList<Trajectory> trajectories, LineChart view){
 
+        XAxis xAxis = view.getXAxis();
+        YAxis yAxisLeft = view.getAxisLeft();
+        YAxis yAxisRight = view.getAxisRight();
+
         view.setDescription(null);
         view.setBorderColor(context.getResources().getColor(R.color.colorPrimary));
         view.getAxisRight().setDrawLabels(false);
         view.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        // Styling y-axis
-        view.getAxisLeft().setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
-        view.getAxisLeft().setGridColor(context.getResources().getColor(R.color.colorAccent));
-        view.getAxisLeft().setDrawGridLines(true);
-        view.getAxisLeft().setTextColor(context.getResources().getColor(R.color.colorAccent));
-        view.getAxisLeft().setAxisMinimum(0);
-        view.getAxisLeft().setAxisMaximum(20);
-        view.getAxisLeft().setLabelCount(4);
+        // Styling right y-axis
+        yAxisRight.setDrawGridLines(false);
+
+        // Styling left y-axis
+        yAxisLeft.setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
+        yAxisLeft.setGridColor(context.getResources().getColor(R.color.colorAccent));
+        yAxisLeft.setDrawGridLines(true);
+        yAxisLeft.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        yAxisLeft.setAxisMinimum(0);
+        yAxisLeft.setAxisMaximum(20);
+        yAxisLeft.setLabelCount(4);
 
         // Styling x-axis
-        view.getXAxis().setGridColor(context.getResources().getColor(R.color.colorAccent));
-        view.getXAxis().setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
-        view.getXAxis().setTextColor(context.getResources().getColor(R.color.colorAccent));
-        view.getXAxis().setAxisMinimum(0);
-        view.getXAxis().setAxisMaximum(90);
-        view.getXAxis().setLabelCount(10);
+        xAxis.setGridColor(context.getResources().getColor(R.color.colorAccent));
+        xAxis.setAxisLineColor(context.getResources().getColor(R.color.colorAccent));
+        xAxis.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(90);
+        xAxis.setLabelCount(10);
 
         LineData lineData = new LineData();
 
