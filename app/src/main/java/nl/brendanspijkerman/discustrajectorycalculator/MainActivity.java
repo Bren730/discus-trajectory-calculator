@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import nl.brendanspijkerman.discustrajectorycalculator.activity.DiscusTrackerActivity;
 import nl.brendanspijkerman.discustrajectorycalculator.adapter.AthletesAdapter;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
@@ -71,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
 //        intent.putExtra("variables", variables);
         startActivity(intent);
 
+    }
+
+    public void newTraining(View view) {
+
+        Intent intent = new Intent(this, DiscusTrackerActivity.class);
+        startActivity(intent);
     }
 
     /**
