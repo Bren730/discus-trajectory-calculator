@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import nl.brendanspijkerman.discustrajectorycalculator.model.Gender;
+import nl.brendanspijkerman.discustrajectorycalculator.models.Gender;
 
 public class NewAthleteActivity extends AppCompatActivity {
 

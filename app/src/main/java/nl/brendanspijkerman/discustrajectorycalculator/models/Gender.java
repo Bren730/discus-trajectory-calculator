@@ -1,4 +1,4 @@
-package nl.brendanspijkerman.discustrajectorycalculator.model;
+package nl.brendanspijkerman.discustrajectorycalculator.models;
 
 /**
  * Created by brendan on 11/12/2016.

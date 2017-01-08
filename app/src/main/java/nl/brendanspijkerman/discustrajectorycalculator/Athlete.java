@@ -5,7 +5,7 @@ import android.net.Uri;
 import java.util.Calendar;
 import java.util.UUID;
 
-import nl.brendanspijkerman.discustrajectorycalculator.model.Gender;
+import nl.brendanspijkerman.discustrajectorycalculator.models.Gender;
 
 /**
  * Created by Brendan on 27-11-2016.

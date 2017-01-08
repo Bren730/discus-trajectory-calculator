@@ -36,7 +36,7 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
 
-        <activity android:name=".activity.DiscusTrackerActivity"></activity>
+        <activity android:name=".activities.DiscusTrackerActivity"></activity>
     </application>
 
 </manifest>

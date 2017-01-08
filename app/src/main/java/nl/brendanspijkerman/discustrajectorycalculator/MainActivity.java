@@ -1,22 +1,15 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import nl.brendanspijkerman.discustrajectorycalculator.activity.DiscusTrackerActivity;
-import nl.brendanspijkerman.discustrajectorycalculator.adapter.AthletesAdapter;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import nl.brendanspijkerman.discustrajectorycalculator.activities.DiscusTrackerActivity;
+import nl.brendanspijkerman.discustrajectorycalculator.adapters.AthletesAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package nl.brendanspijkerman.discustrajectorycalculator.activity;
+package nl.brendanspijkerman.discustrajectorycalculator.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -17,20 +16,16 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -41,15 +36,14 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
-import org.opencv.core.CvType.*;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import nl.brendanspijkerman.discustrajectorycalculator.R;
+import nl.brendanspijkerman.discustrajectorycalculator.models.BaseStation;
+import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscus;
 
 import static org.opencv.core.CvType.CV_64FC1;
 
@@ -77,7 +71,10 @@ public class DiscusTrackerActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final String TAG = "DiscusTrackerActivity";
 
-    private List<BluetoothDevice> btDeviceList = new ArrayList<BluetoothDevice>() {};
+    private List<BluetoothDevice> btDeviceList = new ArrayList<BluetoothDevice>(){};
+
+    private BaseStation baseStation;
+    private DataDiscus dataDiscus;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -86,6 +83,11 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                 case LoaderCallbackInterface.SUCCESS:
                 {
                     Log.i(TAG, "OpenCV loaded successfully");
+
+                    // OpenCV loaded, BaseStation and DataDiscus classes can now be constructed
+                    baseStation = new BaseStation(120);
+                    dataDiscus = new DataDiscus(10, 0.85, 0.03, baseStation);
+
                 } break;
                 default:
                 {
@@ -99,6 +101,8 @@ public class DiscusTrackerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discus_tracker);
+
+        setTitle("Discus Tracker");
 
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
