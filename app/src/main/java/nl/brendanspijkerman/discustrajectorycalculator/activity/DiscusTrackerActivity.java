@@ -34,9 +34,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.calib3d.Calib3d;
@@ -44,8 +41,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
-import org.opencv.core.Point;
-import org.opencv.core.Point3;
+import org.opencv.core.CvType.*;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -54,6 +50,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import nl.brendanspijkerman.discustrajectorycalculator.R;
+
+import static org.opencv.core.CvType.CV_64FC1;
 
 public class DiscusTrackerActivity extends AppCompatActivity {
 
@@ -80,6 +78,22 @@ public class DiscusTrackerActivity extends AppCompatActivity {
     private static final String TAG = "DiscusTrackerActivity";
 
     private List<BluetoothDevice> btDeviceList = new ArrayList<BluetoothDevice>() {};
+
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS:
+                {
+                    Log.i(TAG, "OpenCV loaded successfully");
+                } break;
+                default:
+                {
+                    super.onManagerConnected(status);
+                } break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,18 +134,57 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     }
 
-    public void openCvTestClick(View view) {
-        byte[] msg = {2};
-        tx.setValue(msg);
+    public void solvePnP() {
+        double fx = 2000 / (2 * Math.tan(120.0 / 180.0 * Math.PI / 2.0));
+        double fy = 2000 / (2 * Math.tan(120.0 / 180.0 * Math.PI / 2.0));
+        double cx = 2000 / 2.0;
+        double cy = 2000 / 2.0;
+        Mat cameraMatrix = new Mat(3, 3, CV_64FC1);
+        cameraMatrix.put(0, 0, fx);
+        cameraMatrix.put(0, 2, cx);
+        cameraMatrix.put(1, 1, fy);
+        cameraMatrix.put(1, 2, cy);
+        cameraMatrix.put(2, 2, 1);
 
-        if (mGatt.writeCharacteristic(tx)) {
-            Log.i("Sent: ", msg.toString());
+        MatOfDouble distortionCoefficients = new MatOfDouble(4, 1, CV_64FC1);
+        MatOfDouble distCoefficients = new MatOfDouble();
+
+        //distortionCoefficients.put(0, 0, 0);
+        //distortionCoefficients.put(1, 0, 0);
+        //distortionCoefficients.put(2, 0, 0);
+        //distortionCoefficients.put(3, 0, 0);
+
+        Mat outputR = new Mat(3, 1, CV_64FC1);
+        Mat outputT = new Mat(3, 1, CV_64FC1);
+
+        MatOfPoint3f _objPoints = new MatOfPoint3f();
+        MatOfPoint2f _imgPoints = new MatOfPoint2f();
+
+        try {
+            Calib3d.solvePnP(_objPoints, _imgPoints, cameraMatrix, distCoefficients, outputR, outputT);
+            int b = 1;
+        } catch (Exception e) {
+            Log.e("Error in solvePnP", e.toString());
         }
+    }
+
+    public void openCvTestClick(View view) {
+//        byte[] msg = {2};
+//        tx.setValue(msg);
+//
+//        if (mGatt.writeCharacteristic(tx)) {
+//            Log.i("Sent: ", msg.toString());
+//        }
+
+        solvePnP();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, mLoaderCallback);
+
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -143,7 +196,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                         .build();
                 filters = new ArrayList<ScanFilter>();
             }
-            scanLeDevice(true);
+//            scanLeDevice(true);
         }
     }
 

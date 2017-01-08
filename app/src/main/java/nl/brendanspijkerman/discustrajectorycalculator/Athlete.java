@@ -5,7 +5,7 @@ import android.net.Uri;
 import java.util.Calendar;
 import java.util.UUID;
 
-import nl.brendanspijkerman.discustrajectorycalculator.model.Sex;
+import nl.brendanspijkerman.discustrajectorycalculator.model.Gender;
 
 /**
  * Created by Brendan on 27-11-2016.
@@ -18,7 +18,7 @@ public class Athlete {
 
     public Calendar birthday;
 
-    public Sex sex;
+    public Gender gender;
 
     public Uri photoUri;
 
@@ -45,27 +45,27 @@ public class Athlete {
 
     }
 
-    Athlete(String _name, Calendar _birthday, Sex _sex) {
+    Athlete(String _name, Calendar _birthday, Gender _gender) {
 
         this.name = _name;
         this.id = UUID.randomUUID();
 
         this.birthday = _birthday;
 
-        this.sex = _sex;
+        this.gender = _gender;
 
         this.uniqueName = this.name + "_" + this.id.toString();
 
     }
 
-    Athlete(String _name, Calendar _birthday, Sex _sex, Uri _photoUri) {
+    Athlete(String _name, Calendar _birthday, Gender _gender, Uri _photoUri) {
 
         this.name = _name;
         this.id = UUID.randomUUID();
 
         this.birthday = _birthday;
 
-        this.sex = _sex;
+        this.gender = _gender;
 
         this.photoUri = _photoUri;
 

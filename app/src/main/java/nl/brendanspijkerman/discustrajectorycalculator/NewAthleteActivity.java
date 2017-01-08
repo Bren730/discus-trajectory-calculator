@@ -1,37 +1,31 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import nl.brendanspijkerman.discustrajectorycalculator.model.Sex;
+import nl.brendanspijkerman.discustrajectorycalculator.model.Gender;
 
 public class NewAthleteActivity extends AppCompatActivity {
 
@@ -42,7 +36,7 @@ public class NewAthleteActivity extends AppCompatActivity {
 
     private String _name = null;
     private Calendar _birthday = null;
-    private Sex _sex = null;
+    private Gender _gender = null;
     private Uri _photoUri = null;
 
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -88,15 +82,15 @@ public class NewAthleteActivity extends AppCompatActivity {
                 switch (checkedRadioButton.getText().toString()) {
 
                     case "Male":
-                        _sex = Sex.MALE;
+                        _gender = Gender.MALE;
                         break;
 
                     case "Female":
-                        _sex = Sex.FEMALE;
+                        _gender = Gender.FEMALE;
                         break;
 
                     default:
-                        _sex = Sex.MALE;
+                        _gender = Gender.MALE;
                         break;
 
                 }
@@ -224,11 +218,11 @@ public class NewAthleteActivity extends AppCompatActivity {
 
             if(_photoUri != null){
 
-                athlete = new Athlete(_name, _birthday, _sex, _photoUri);
+                athlete = new Athlete(_name, _birthday, _gender, _photoUri);
 
             } else {
 
-                athlete = new Athlete(_name, _birthday, _sex);
+                athlete = new Athlete(_name, _birthday, _gender);
 
             }
 
@@ -253,7 +247,7 @@ public class NewAthleteActivity extends AppCompatActivity {
 
     public boolean checkInput() {
 
-        if(_name != null && !_name.isEmpty() && _birthday != null && _sex != null) {
+        if(_name != null && !_name.isEmpty() && _birthday != null && _gender != null) {
 
             return true;
 

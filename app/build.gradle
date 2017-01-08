@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "25.0.0"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "nl.brendanspijkerman.discustrajectorycalculator"
         minSdkVersion 23
@@ -45,5 +45,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     testCompile 'junit:junit:4.12'
     compile 'com.github.clans:fab:1.6.4'
-    compile project(':libraries:opencv')
+    compile project(':openCVLibrary320')
 }
