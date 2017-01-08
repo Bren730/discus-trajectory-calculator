@@ -37,8 +37,9 @@ public class DataDiscus {
     public MatOfPoint3f objPoints = new MatOfPoint3f();
     public ArrayList<Point3> objPointsList = new ArrayList<>();
 
-    public double[] position = new double[3];
-    public double[] rotation = new double[3];
+    public ArrayList<double[]> position = new ArrayList<>(120 * 5);
+    public ArrayList<double[]> rotation = new ArrayList<>(120 * 5);
+    public double velocity;
 
     final double CPU_SPEED = 96.0; // CPU speed in MHz
     final double SWEEP_CYCLE_TIME = 8333; // Sweep cycle time in us
@@ -196,7 +197,7 @@ public class DataDiscus {
 
     }
 
-    private void solvePnP(MatOfPoint3f _objPoints, MatOfPoint2f _imgPoints) {
+    public void solvePnP(MatOfPoint3f _objPoints, MatOfPoint2f _imgPoints) {
 
         Mat outputR = new Mat(3, 1, CvType.CV_64FC1);
         Mat outputT = new Mat(3, 1, CvType.CV_64FC1);
@@ -207,6 +208,28 @@ public class DataDiscus {
 
             Mat rMat = new Mat();
             Calib3d.Rodrigues(outputR, rMat);
+
+            double[] x = new double[1];
+            double[] y = new double[1];
+            double[] z = new double[1];
+
+            double[] xR = new double[1];
+            double[] yR = new double[1];
+            double[] zR = new double[1];
+
+            outputT.get(0, 0, x);
+            outputT.get(1, 0, y);
+            outputT.get(2, 0, z);
+
+            rMat.get(0, 0, xR);
+            rMat.get(1, 0, yR);
+            rMat.get(2, 0, zR);
+
+            double[] pos = {x[0], y[0], z[0]};
+            double[] rot = {xR[0], yR[0], zR[0]};
+
+            position.add(0, pos);
+            rotation.add(0, rot);
 
         } catch (Exception e) {
 

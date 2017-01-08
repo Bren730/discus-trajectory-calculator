@@ -18,6 +18,7 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -35,7 +36,10 @@ import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfPoint3;
 import org.opencv.core.MatOfPoint3f;
+import org.opencv.core.Point;
+import org.opencv.core.Point3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +79,8 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     private BaseStation baseStation;
     private DataDiscus dataDiscus;
+
+    private GLSurfaceView mGLView;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -138,38 +144,30 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     }
 
-    public void solvePnP() {
-        double fx = 2000 / (2 * Math.tan(120.0 / 180.0 * Math.PI / 2.0));
-        double fy = 2000 / (2 * Math.tan(120.0 / 180.0 * Math.PI / 2.0));
-        double cx = 2000 / 2.0;
-        double cy = 2000 / 2.0;
-        Mat cameraMatrix = new Mat(3, 3, CV_64FC1);
-        cameraMatrix.put(0, 0, fx);
-        cameraMatrix.put(0, 2, cx);
-        cameraMatrix.put(1, 1, fy);
-        cameraMatrix.put(1, 2, cy);
-        cameraMatrix.put(2, 2, 1);
+    public void solvePnPTest() {
+        ArrayList<Point> imgPointsList = new ArrayList<>();
 
-        MatOfDouble distortionCoefficients = new MatOfDouble(4, 1, CV_64FC1);
-        MatOfDouble distCoefficients = new MatOfDouble();
+        imgPointsList.add(new Point(500, 500));
+        imgPointsList.add(new Point(600, 600));
+        imgPointsList.add(new Point(450, 600));
+        imgPointsList.add(new Point(600, 450));
+        imgPointsList.add(new Point(500, 800));
 
-        //distortionCoefficients.put(0, 0, 0);
-        //distortionCoefficients.put(1, 0, 0);
-        //distortionCoefficients.put(2, 0, 0);
-        //distortionCoefficients.put(3, 0, 0);
+        MatOfPoint2f imgPoints = new MatOfPoint2f();
+        imgPoints.fromList(imgPointsList);
 
-        Mat outputR = new Mat(3, 1, CV_64FC1);
-        Mat outputT = new Mat(3, 1, CV_64FC1);
+        ArrayList<Point3> objPointsList = new ArrayList<>();
 
-        MatOfPoint3f _objPoints = new MatOfPoint3f();
-        MatOfPoint2f _imgPoints = new MatOfPoint2f();
+        objPointsList.add(dataDiscus.objPointsList.get(0));
+        objPointsList.add(dataDiscus.objPointsList.get(1));
+        objPointsList.add(dataDiscus.objPointsList.get(2));
+        objPointsList.add(dataDiscus.objPointsList.get(3));
+        objPointsList.add(dataDiscus.objPointsList.get(4));
 
-        try {
-            Calib3d.solvePnP(_objPoints, _imgPoints, cameraMatrix, distCoefficients, outputR, outputT);
-            int b = 1;
-        } catch (Exception e) {
-            Log.e("Error in solvePnP", e.toString());
-        }
+        MatOfPoint3f objPoints = new MatOfPoint3f();
+        objPoints.fromList(objPointsList);
+
+        dataDiscus.solvePnP(objPoints, imgPoints);
     }
 
     public void openCvTestClick(View view) {
@@ -180,7 +178,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 //            Log.i("Sent: ", msg.toString());
 //        }
 
-        solvePnP();
+        solvePnPTest();
     }
 
     @Override
@@ -213,13 +211,21 @@ public class DiscusTrackerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        Log.w(TAG, "App stopped");
+
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (mGatt == null) {
             return;
         }
         mGatt.close();
         mGatt = null;
-        super.onDestroy();
+
     }
 
     @Override
