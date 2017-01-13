@@ -1,26 +1,18 @@
 package nl.brendanspijkerman.discustrajectorycalculator.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
-import android.os.Handler;
+import android.os.ParcelUuid;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -41,9 +33,13 @@ import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
 
+import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import nl.brendanspijkerman.discustrajectorycalculator.R;
 import nl.brendanspijkerman.discustrajectorycalculator.models.BaseStation;
@@ -53,32 +49,18 @@ import static org.opencv.core.CvType.CV_64FC1;
 
 public class DiscusTrackerActivity extends AppCompatActivity {
 
-    private BluetoothAdapter mBluetoothAdapter;
-    private int REQUEST_ENABLE_BT = 1;
-    private Handler mHandler;
-    private static final long SCAN_PERIOD = 10000;
-    private BluetoothLeScanner mLEScanner;
-    private ScanSettings settings;
-    private List<ScanFilter> filters;
-    private BluetoothGatt mGatt;
-
-    // UUIDs for UAT service and associated characteristics.
-    public static UUID UART_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
-    public static UUID TX_UUID = UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
-    public static UUID RX_UUID = UUID.fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
-    // UUID for the BTLE client characteristic which is necessary for notifications.
-    public static UUID CLIENT_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-
-    private BluetoothGattCharacteristic tx;
-    private BluetoothGattCharacteristic rx;
-
-    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final String TAG = "DiscusTrackerActivity";
-
-    private List<BluetoothDevice> btDeviceList = new ArrayList<BluetoothDevice>(){};
+    private static final Integer REQUEST_ENABLE_BT = 1;
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
     private BaseStation baseStation;
     private DataDiscus dataDiscus;
+
+    ArrayList<BluetoothDevice> BTDeviceList = new ArrayList<>();
+
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+    InputStream inputStream;
 
     private GLSurfaceView mGLView;
 
@@ -110,11 +92,12 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
         setTitle("Discus Tracker");
 
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        // First request user permission to use coarse location
+        // This is needed to scan for Bluetooth devices
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -124,7 +107,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                 // No explanation needed, we can request the permission.
 
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
 
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
@@ -132,17 +115,101 @@ public class DiscusTrackerActivity extends AppCompatActivity {
             }
         }
 
-        mHandler = new Handler();
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "BLE Not Supported",
-                    Toast.LENGTH_SHORT).show();
-            finish();
+        if (mBluetoothAdapter == null) {
+            Log.i(TAG, "This device does not support BlueTooth");
+        } else {
+
+            Log.i(TAG, "This device supports BlueTooth, checking if it is enabled...");
+            if (!mBluetoothAdapter.isEnabled()) {
+                Log.i(TAG, "Bluetooth not enabled. Requesting user to enable it.");
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                Log.i(TAG, "Bluetooth enabled");
+            }
         }
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
 
     }
+
+    private void checkPairedDevices() {
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        if (pairedDevices.size() > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (BluetoothDevice device : pairedDevices) {
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                Log.i(TAG, deviceHardwareAddress + " is currently paired");
+            }
+        } else {
+
+            Log.i(TAG, "No devices currently paired, initiating discovery");
+            startDeviceDiscovery();
+
+        }
+    }
+
+    private void startDeviceDiscovery() {
+
+        if (mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+
+        if(mBluetoothAdapter.startDiscovery()) {
+            Log.i(TAG, "Starting device discovery");
+        }
+
+        //let's make a broadcast receiver to register our things
+        IntentFilter ifilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        this.registerReceiver(mReceiver, ifilter);
+
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Discovery has found a device. Get the BluetoothDevice
+                // object and its info from the Intent.
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+//                Log.i(TAG, "Found " + deviceName + " " + deviceHardwareAddress);
+                BTDeviceList.add(device);
+
+                try {
+                    if (deviceName.equals("ArcReactor")) {
+
+                        Log.i(TAG, "Found Data Discus");
+
+                        BluetoothDevice dataDiscusDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
+
+                        Method m = dataDiscusDevice.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
+                        BluetoothSocket socket = (BluetoothSocket) m.invoke(dataDiscusDevice, Integer.valueOf(1));
+                        socket.connect();
+                        inputStream = socket.getInputStream();
+
+                        try {
+                            while (true){
+                                Log.i(TAG, String.valueOf(inputStream.read()));
+                            }
+                        } catch (Exception e) {
+
+                        }
+                        mBluetoothAdapter.cancelDiscovery();
+//                    BluetoothServerSocket socket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(uuid);
+
+
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+
+                }
+            }
+        }
+    };
 
     public void solvePnPTest() {
         ArrayList<Point> imgPointsList = new ArrayList<>();
@@ -178,7 +245,9 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 //            Log.i("Sent: ", msg.toString());
 //        }
 
-        solvePnPTest();
+//        checkPairedDevices();
+        startDeviceDiscovery();
+//        solvePnPTest();
     }
 
     @Override
@@ -187,207 +256,34 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, mLoaderCallback);
 
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            if (Build.VERSION.SDK_INT >= 21) {
-                mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-                settings = new ScanSettings.Builder()
-                        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                        .build();
-                filters = new ArrayList<ScanFilter>();
-            }
-//            scanLeDevice(true);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-            scanLeDevice(false);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        Log.w(TAG, "App stopped");
-
-        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mGatt == null) {
-            return;
-        }
-        mGatt.close();
-        mGatt = null;
 
+        // Don't forget to unregister the ACTION_FOUND receiver.
+        unregisterReceiver(mReceiver);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Bluetooth not enabled.
-                finish();
-                return;
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (Build.VERSION.SDK_INT < 21) {
-                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    } else {
-                        mLEScanner.stopScan(mScanCallback);
+            if (resultCode == RESULT_OK) {
 
-                    }
-                }
-            }, SCAN_PERIOD);
-            if (Build.VERSION.SDK_INT < 21) {
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
+                Log.i(TAG, "User has enabled Bluetooth");
+
             } else {
-                mLEScanner.startScan(filters, settings, mScanCallback);
+
+                Log.i(TAG, "User did not enable Bluetooth, notify and quit activity");
+
             }
-        } else {
-            if (Build.VERSION.SDK_INT < 21) {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            } else {
-                mLEScanner.stopScan(mScanCallback);
-            }
+
         }
+
     }
-
-
-    private ScanCallback mScanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            Log.i("callbackType", String.valueOf(callbackType));
-            Log.i("result", result.toString());
-            BluetoothDevice btDevice = result.getDevice();
-            try {
-                String deviceName = btDevice.getName();
-                Log.i("DeviceName", deviceName);
-                if (deviceName.equals("ArcReac")) {
-
-                    connectToDevice(btDevice);
-
-                }
-            } catch (Exception e) {
-                Log.e("Get name error", e.toString());
-            }
-            btDeviceList.add(btDevice);
-//            connectToDevice(btDevice);
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            for (ScanResult sr : results) {
-                Log.i("ScanResult - Results", sr.toString());
-            }
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            Log.e("Scan Failed", "Error Code: " + errorCode);
-        }
-    };
-
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi,
-                                     byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i("onLeScan", device.toString());
-                            connectToDevice(device);
-                        }
-                    });
-                }
-            };
-
-    public void connectToDevice(BluetoothDevice device) {
-        if (mGatt == null) {
-            mGatt = device.connectGatt(this, false, gattCallback);
-            scanLeDevice(false);// will stop after first device detection
-        }
-    }
-
-    private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            Log.i("onConnectionStateChange", "Status: " + status);
-            switch (newState) {
-                case BluetoothProfile.STATE_CONNECTED:
-                    Log.i("gattCallback", "STATE_CONNECTED");
-                    gatt.discoverServices();
-                    break;
-                case BluetoothProfile.STATE_DISCONNECTED:
-                    Log.e("gattCallback", "STATE_DISCONNECTED");
-                    break;
-                default:
-                    Log.e("gattCallback", "STATE_OTHER");
-            }
-
-        }
-
-        // Called when services have been discovered on the remote device.
-        // It seems to be necessary to wait for this discovery to occur before
-        // manipulating any services or characteristics.
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            super.onServicesDiscovered(gatt, status);
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.i("BTServices", "Service discovery completed!");
-            }
-            else {
-                Log.i("BTServices", "Service discovery failed with status: " + status);
-            }
-            // Save reference to each characteristic.
-            tx = gatt.getService(UART_UUID).getCharacteristic(TX_UUID);
-            rx = gatt.getService(UART_UUID).getCharacteristic(RX_UUID);
-            // Setup notifications on RX characteristic changes (i.e. data received).
-            // First call setCharacteristicNotification to enable notification.
-            if (!gatt.setCharacteristicNotification(rx, true)) {
-                Log.i("BTServices", "Couldn't set notifications for RX characteristic!");
-            }
-            // Next update the RX characteristic's client descriptor to enable notifications.
-            if (rx.getDescriptor(CLIENT_UUID) != null) {
-                BluetoothGattDescriptor desc = rx.getDescriptor(CLIENT_UUID);
-                desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                if (!gatt.writeDescriptor(desc)) {
-                    Log.i("BTServices", "Couldn't write RX client descriptor value!");
-                }
-            }
-            else {
-                Log.i("BTServices", "Couldn't get RX client descriptor!");
-            }
-        }
-
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt,
-                                         BluetoothGattCharacteristic
-                                                 characteristic, int status) {
-            Log.i("onCharacteristicRead", characteristic.toString());
-            gatt.disconnect();
-        }
-
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            super.onCharacteristicChanged(gatt, characteristic);
-            Log.i("Received: ", characteristic.getStringValue(0));
-        }
-    };
 
 }
