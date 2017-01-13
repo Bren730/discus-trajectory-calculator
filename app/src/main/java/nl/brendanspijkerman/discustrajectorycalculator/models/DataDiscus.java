@@ -37,6 +37,7 @@ public class DataDiscus {
     public MatOfPoint3f objPoints = new MatOfPoint3f();
     public ArrayList<Point3> objPointsList = new ArrayList<>();
 
+    // 120 measurements per second, for five seconds
     public ArrayList<double[]> position = new ArrayList<>(120 * 5);
     public ArrayList<double[]> rotation = new ArrayList<>(120 * 5);
     public double velocity;
@@ -85,15 +86,15 @@ public class DataDiscus {
 
     }
 
-    public void parseData(int[] data) {
+    public void parseData(ArrayList<Integer> data) {
 
-        if (data.length > 0) {
+        if (data.size() > 0) {
 
             resetSensors();
 
-            int observedSensorCount = (int)Math.floor( (double)(data.length - headerLength) / (double)msgLength );
+            int observedSensorCount = (int)Math.floor( (double)(data.size() - headerLength) / (double)msgLength );
 
-            int meta = data[0];
+            int meta = data.get(0);
 
             baseStation.skip = (byte)getBit(meta, 2);
             baseStation.rotor = (byte)getBit(meta, 1);
@@ -107,11 +108,11 @@ public class DataDiscus {
                 for (int i = 0; i < observedSensorCount; i++) {
 
                     int readPos = (i * msgLength) + headerLength;
-                    byte sensorId = (byte)data[readPos];
+                    int sensorId = data.get(readPos);
 
                     LighthouseSensor _sensor = sensors.get(sensorId);
 
-                    _sensor.deltaT = (((data[readPos + 1] & 0xFF) << 24) | ((data[readPos + 2] & 0xFF) << 16) | ((data[readPos + 3] & 0xFF) << 8) | (data[readPos + 4] & 0xFF));
+                    _sensor.deltaT = (((data.get(readPos + 1) & 0xFF) << 24) | ((data.get(readPos + 2) & 0xFF) << 16) | ((data.get(readPos + 3) & 0xFF) << 8) | (data.get(readPos + 4) & 0xFF));
 
                     _sensor.sawSweep = true;
 
@@ -127,6 +128,7 @@ public class DataDiscus {
 
                     }
 
+//                    Log.i("DataDiscus", String.valueOf(_sensor.angles[0]) + " " + String.valueOf(_sensor.angles[1]));
                     Point point = new Point(_sensor.position2D[0], _sensor.position2D[1]);
 
                     // Populate the image and object points lists with the sensors that were observed
@@ -153,13 +155,14 @@ public class DataDiscus {
 
         double angle = 0;
 
-        double fovLimit = (180 - baseStation.fov) / 2.0;
+        double fovLimit = baseStation.fov / 2.0;
 
-        angle = ((double)deltaT / SWEEP_CYCLE_CLOCK_CYCLES) * 180;
+        angle = ((double)deltaT / (double)SWEEP_CYCLE_CLOCK_CYCLES) * 180.0;
 
-        if (angle < fovLimit || angle > 180 - fovLimit) {
+        if (angle < -fovLimit || angle > fovLimit) {
 
             angle = 0;
+
         }
 
         return angle;

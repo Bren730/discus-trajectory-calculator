@@ -191,9 +191,24 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                         socket.connect();
                         inputStream = socket.getInputStream();
 
+                        int[] flagBuffer = new int[2];
+                        ArrayList<Integer> inBuffer = new ArrayList<>();
+                        int bufferIndex = 0;
+
                         try {
                             while (true){
-                                Log.i(TAG, String.valueOf(inputStream.read()));
+                                flagBuffer[1] = flagBuffer[0];
+                                flagBuffer[0] = inputStream.read();
+                                inBuffer.add(flagBuffer[0]);
+                                bufferIndex++;
+//                                Log.i(TAG, String.valueOf(inputStream.read()));
+
+                                if (flagBuffer[0] == 255 && flagBuffer[1] == 255) {
+                                    //println("Startflag received");
+                                    dataDiscus.parseData(inBuffer);
+                                    inBuffer = new ArrayList<Integer>();
+                                    bufferIndex = 0;
+                                }
                             }
                         } catch (Exception e) {
 

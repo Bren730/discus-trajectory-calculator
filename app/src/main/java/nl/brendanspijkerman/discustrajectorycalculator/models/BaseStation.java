@@ -31,11 +31,11 @@ public class BaseStation {
 
     public BaseStation(double _fov) {
 
-        double fov = _fov;
-        double fx = (double)res / (2 * Math.tan(fov / 180.0 * Math.PI / 2.0));
-        double fy = fx;
-        double cx = (double)res / 2.0;
-        double cy = cx;
+        fov = _fov;
+        fx = (double)res / (2 * Math.tan(fov / 180.0 * Math.PI / 2.0));
+        fy = fx;
+        cx = (double)res / 2.0;
+        cy = cx;
 
         cameraMatrix.put(0, 0, fx);
         cameraMatrix.put(0, 2, cx);
