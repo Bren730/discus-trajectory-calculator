@@ -39,8 +39,14 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OpenCV Test"
+            android:text="Connect"
             android:onClick="openCvTestClick"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:onClick="stopReader"/>
 
     </LinearLayout>
 

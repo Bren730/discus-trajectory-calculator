@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutionException;
 import nl.brendanspijkerman.discustrajectorycalculator.R;
 import nl.brendanspijkerman.discustrajectorycalculator.models.BaseStation;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscus;
+import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscusStreamReader;
 
 import static org.opencv.core.CvType.CV_64FC1;
 
@@ -56,12 +57,12 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     private BaseStation baseStation;
     private DataDiscus dataDiscus;
+    private InputStream inputStream;
+    private DataDiscusStreamReader dataDiscusStreamReader;
 
     ArrayList<BluetoothDevice> BTDeviceList = new ArrayList<>();
 
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-    InputStream inputStream;
 
     TextView posTv;
 
@@ -76,6 +77,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     // OpenCV loaded, BaseStation and DataDiscus classes can now be constructed
                     baseStation = new BaseStation(120);
                     dataDiscus = new DataDiscus(10, 0.07753, 0.00667, baseStation);
+//                    dataDiscusStreamReader = new DataDiscusStreamReader(inputStream, dataDiscus);
 
                 } break;
                 default:
@@ -197,48 +199,16 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                         connectionStatus.setText("Connected!");
 
-                        inputStream = socket.getInputStream();
-
-                        int[] flagBuffer = new int[2];
-                        ArrayList<Integer> inBuffer = new ArrayList<>();
-                        int bufferIndex = 0;
+//                        inputStream = socket.getInputStream();
 
                         try {
-                            while (true){
-                                flagBuffer[1] = flagBuffer[0];
-                                flagBuffer[0] = inputStream.read();
-                                inBuffer.add(flagBuffer[0]);
-                                bufferIndex++;
-//                                Log.i(TAG, String.valueOf(inputStream.read()));
 
-                                if (flagBuffer[0] == 255 && flagBuffer[1] == 255) {
-                                    //println("Startflag received");
+                            DataDiscusStreamReader dataDiscusStreamReader = new DataDiscusStreamReader(socket.getInputStream(), dataDiscus);
+                            dataDiscusStreamReader.start();
 
-                                    try {
-
-                                        double[] pos = dataDiscus.parseData(inBuffer);
-
-                                        double x = pos[0];
-                                        double y = pos[1];
-                                        double z = pos[2];
-
-                                        Log.i(TAG, String.valueOf(x) + ", " + String.valueOf(y) + ", " + String.valueOf(z));
-                                    }catch (Exception e) {
-                                        Log.e(TAG, e.toString());
-                                    }
-
-
-                                    try {
-//                                        posTv.setText(String.valueOf(pos[0]) + ", " + String.valueOf(pos[1]) + ", " + String.valueOf(pos[2]));
-                                    } catch (Exception e) {
-                                        Log.e(TAG, e.toString());
-                                    }
-
-                                    inBuffer = new ArrayList<Integer>();
-                                    bufferIndex = 0;
-                                }
-                            }
                         } catch (Exception e) {
+
+                            Log.e(TAG, e.toString());
 
                         }
                         mBluetoothAdapter.cancelDiscovery();
@@ -290,6 +260,12 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 //        checkPairedDevices();
         startDeviceDiscovery();
 //        solvePnPTest();
+    }
+
+    public void stopReader(View view) {
+
+
+
     }
 
     @Override
