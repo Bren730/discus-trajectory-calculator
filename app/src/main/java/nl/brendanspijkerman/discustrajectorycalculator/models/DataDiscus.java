@@ -1,6 +1,7 @@
 package nl.brendanspijkerman.discustrajectorycalculator.models;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvType;
@@ -10,6 +11,7 @@ import org.opencv.core.MatOfPoint3;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -86,7 +88,7 @@ public class DataDiscus {
 
     }
 
-    public void parseData(ArrayList<Integer> data) {
+    public double[] parseData(ArrayList<Integer> data) {
 
         if (data.size() > 0) {
 
@@ -114,26 +116,52 @@ public class DataDiscus {
 
                     _sensor.deltaT = (((data.get(readPos + 1) & 0xFF) << 24) | ((data.get(readPos + 2) & 0xFF) << 16) | ((data.get(readPos + 3) & 0xFF) << 8) | (data.get(readPos + 4) & 0xFF));
 
-                    _sensor.sawSweep = true;
-
                     if (baseStation.rotor == 0) {
 
-                        _sensor.angles[0] = getAngle(_sensor.deltaT);
-                        _sensor.position2D[0] = getScreenX(_sensor.angles[0]);
+                        double angle = getAngle(_sensor.deltaT);
+
+                        if (angle != -1) {
+                            _sensor.angles[0] = getAngle(_sensor.deltaT);
+                            _sensor.position2D[0] = getScreenX(_sensor.angles[0]);
+
+//                            if (_sensor.id == 2) {
+//                                Log.i("Solver", "Angle: " + String.valueOf(_sensor.angles[0]));
+//                                Log.i("Solver", "XPos: " + String.valueOf(_sensor.position2D[0]));
+//                            }
+
+                            _sensor.sawSweep = true;
+
+                        }
 
                     } else {
 
-                        _sensor.angles[1] = getAngle(_sensor.deltaT);
-                        _sensor.position2D[1] = getScreenX(_sensor.angles[1]);
+                        double angle = getAngle(_sensor.deltaT);
+
+                        if (angle != -1) {
+                            _sensor.angles[1] = getAngle(_sensor.deltaT);
+                            _sensor.position2D[1] = getScreenY(_sensor.angles[1]);
+
+//                            if (_sensor.id == 2) {
+//                                Log.i("Solver", "Angle: " + String.valueOf(_sensor.angles[1]));
+//                                Log.i("Solver", "XPos: " + String.valueOf(_sensor.position2D[1]));
+//                            }
+
+                            _sensor.sawSweep = true;
+
+                        }
 
                     }
 
-//                    Log.i("DataDiscus", String.valueOf(_sensor.angles[0]) + " " + String.valueOf(_sensor.angles[1]));
-                    Point point = new Point(_sensor.position2D[0], _sensor.position2D[1]);
+                    if (_sensor.sawSweep) {
+//                        Log.i("DataDiscus", String.valueOf(_sensor.angles[0]) + " " + String.valueOf(_sensor.angles[1]));
+                        Point point = new Point(_sensor.position2D[0], _sensor.position2D[1]);
 
-                    // Populate the image and object points lists with the sensors that were observed
-                    observedImgPointsList.add(point);
-                    observedObjPointsList.add(objPointsList.get(sensorId));
+                        // Populate the image and object points lists with the sensors that were observed
+                        observedImgPointsList.add(point);
+                        observedObjPointsList.add(objPointsList.get(sensorId));
+                    }
+
+//
 
                 }
 
@@ -143,11 +171,15 @@ public class DataDiscus {
                 _imgPoints.fromList(observedImgPointsList);
                 _objPoints.fromList(observedObjPointsList);
 
-                solvePnP(_objPoints, _imgPoints);
+//                Log.i("Solver", observedImgPointsList.toString());
+
+                return solvePnP(_objPoints, _imgPoints);
 
             }
 
         }
+
+        return null;
 
     }
 
@@ -158,10 +190,13 @@ public class DataDiscus {
         double fovLimit = baseStation.fov / 2.0;
 
         angle = ((double)deltaT / (double)SWEEP_CYCLE_CLOCK_CYCLES) * 180.0;
+        angle -= 90;
+
+//        Log.i("Solver", String.valueOf(angle));
 
         if (angle < -fovLimit || angle > fovLimit) {
 
-            angle = 0;
+           return -1;
 
         }
 
@@ -170,15 +205,22 @@ public class DataDiscus {
 
     double getScreenX(double angle) {
 
-        angle = -1 * angle;
+        // Invert the angle so the X-direction matches that of the base station pov
+        angle *= -1;
 
         double xPos;
         double max = Math.tan((Math.toRadians(baseStation.fov) / 2.0));
-        double perc = Math.tan(angle) / max;
+        double perc = Math.tan(Math.toRadians(angle)) / max;
         //println(max, perc, angle);
         xPos = baseStation.halfRes + (perc * baseStation.halfRes);
 
         return xPos;
+
+    }
+
+    double getScreenY(double angle) {
+
+        return getScreenX(-angle);
 
     }
 
@@ -200,7 +242,7 @@ public class DataDiscus {
 
     }
 
-    public void solvePnP(MatOfPoint3f _objPoints, MatOfPoint2f _imgPoints) {
+    public double[] solvePnP(MatOfPoint3f _objPoints, MatOfPoint2f _imgPoints) {
 
         Mat outputR = new Mat(3, 1, CvType.CV_64FC1);
         Mat outputT = new Mat(3, 1, CvType.CV_64FC1);
@@ -234,9 +276,13 @@ public class DataDiscus {
             position.add(0, pos);
             rotation.add(0, rot);
 
+            return pos;
+
         } catch (Exception e) {
 
             Log.e("ERROR", e.toString());
+
+            return null;
 
         }
 

@@ -10,15 +10,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="nl.brendanspijkerman.discustrajectorycalculator.activities.DiscusTrackerActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/messages"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/messages"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="OpenCV Test"
-        android:onClick="openCvTestClick"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/connection_status"
+            android:text="Disconnected"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/discus_position"
+            android:text="Position"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/discus_rotation"
+            android:text="Rotation"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OpenCV Test"
+            android:onClick="openCvTestClick"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

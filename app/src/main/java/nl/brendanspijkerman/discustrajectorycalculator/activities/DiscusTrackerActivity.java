@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -62,7 +63,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     InputStream inputStream;
 
-    private GLSurfaceView mGLView;
+    TextView posTv;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -91,6 +92,8 @@ public class DiscusTrackerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_discus_tracker);
 
         setTitle("Discus Tracker");
+
+        posTv = (TextView) findViewById(R.id.discus_position);
 
         // First request user permission to use coarse location
         // This is needed to scan for Bluetooth devices
@@ -189,6 +192,11 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                         Method m = dataDiscusDevice.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
                         BluetoothSocket socket = (BluetoothSocket) m.invoke(dataDiscusDevice, Integer.valueOf(1));
                         socket.connect();
+
+                        TextView connectionStatus = (TextView) findViewById(R.id.connection_status);
+
+                        connectionStatus.setText("Connected!");
+
                         inputStream = socket.getInputStream();
 
                         int[] flagBuffer = new int[2];
@@ -205,7 +213,27 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                                 if (flagBuffer[0] == 255 && flagBuffer[1] == 255) {
                                     //println("Startflag received");
-                                    dataDiscus.parseData(inBuffer);
+
+                                    try {
+
+                                        double[] pos = dataDiscus.parseData(inBuffer);
+
+                                        double x = pos[0];
+                                        double y = pos[1];
+                                        double z = pos[2];
+
+                                        Log.i(TAG, String.valueOf(x) + ", " + String.valueOf(y) + ", " + String.valueOf(z));
+                                    }catch (Exception e) {
+                                        Log.e(TAG, e.toString());
+                                    }
+
+
+                                    try {
+//                                        posTv.setText(String.valueOf(pos[0]) + ", " + String.valueOf(pos[1]) + ", " + String.valueOf(pos[2]));
+                                    } catch (Exception e) {
+                                        Log.e(TAG, e.toString());
+                                    }
+
                                     inBuffer = new ArrayList<Integer>();
                                     bufferIndex = 0;
                                 }
@@ -249,7 +277,6 @@ public class DiscusTrackerActivity extends AppCompatActivity {
         MatOfPoint3f objPoints = new MatOfPoint3f();
         objPoints.fromList(objPointsList);
 
-        dataDiscus.solvePnP(objPoints, imgPoints);
     }
 
     public void openCvTestClick(View view) {
