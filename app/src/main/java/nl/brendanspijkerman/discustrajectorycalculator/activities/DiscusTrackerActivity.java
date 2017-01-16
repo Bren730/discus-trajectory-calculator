@@ -74,7 +74,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                     // OpenCV loaded, BaseStation and DataDiscus classes can now be constructed
                     baseStation = new BaseStation(120);
-                    dataDiscus = new DataDiscus(10, 0.85, 0.03, baseStation);
+                    dataDiscus = new DataDiscus(10, 0.07753, 0.00667, baseStation);
 
                 } break;
                 default:
