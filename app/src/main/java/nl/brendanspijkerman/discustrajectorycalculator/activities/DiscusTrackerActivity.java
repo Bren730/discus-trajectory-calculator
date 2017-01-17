@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
 import android.os.ParcelUuid;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -133,6 +134,37 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                 Log.i(TAG, "Bluetooth enabled");
             }
         }
+
+        final int delay = 16;
+
+        // Update the UI TextViews every X milliseconds
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable()
+        {
+            private long time = 0;
+
+            @Override
+            public void run()
+            {
+
+                try {
+
+                    String x = String.format("%.2f", dataDiscus.position.get(0)[0]);
+                    String y = String.format("%.2f", dataDiscus.position.get(0)[1]);
+                    String z = String.format("%.2f", dataDiscus.position.get(0)[2]);
+
+                    String data = "Position: x %s, y %s, z %s";
+                    String output = String.format(data, x, y, z);
+
+                    posTv.setText(output);
+                } catch (Exception e) {
+//                    Log.e(TAG, e.toString());
+                }
+
+                time += delay;
+                h.postDelayed(this, delay);
+            }
+        }, delay); // 1 second delay (takes millis)
 
     }
 
