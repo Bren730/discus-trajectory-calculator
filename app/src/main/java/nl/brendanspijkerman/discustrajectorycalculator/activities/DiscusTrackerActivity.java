@@ -149,6 +149,8 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                 try {
 
+                    int b = 0;
+
                     String x = String.format("%.2f", dataDiscus.position.get(0)[0]);
                     String y = String.format("%.2f", dataDiscus.position.get(0)[1]);
                     String z = String.format("%.2f", dataDiscus.position.get(0)[2]);

@@ -31,6 +31,8 @@ public class DataDiscusStreamReader extends Thread {
 
     // Header metadata length
     private int headerLength = 1;
+    // Start flag length
+    private int startFlagLength = 2;
     // Message length for each sensor. 1 Byte indicating sensor id and 4 bytes of timing data
     private int msgLength = 5;
 
@@ -41,6 +43,7 @@ public class DataDiscusStreamReader extends Thread {
         dataDiscus = _dataDiscus;
         baseStation = dataDiscus.baseStation;
         headerLength = dataDiscus.headerLength;
+        startFlagLength = dataDiscus.startFlagLength;
         msgLength = dataDiscus.msgLength;
 
     }
@@ -54,8 +57,9 @@ public class DataDiscusStreamReader extends Thread {
 
             try {
 
-                flagBuffer[0] = inputStream.read();
+
                 flagBuffer[1] = flagBuffer[0];
+                flagBuffer[0] = inputStream.read();
                 inBuffer.add(flagBuffer[0]);
 
 //                                Log.i(TAG, String.valueOf(inputStream.read()));
@@ -95,13 +99,15 @@ public class DataDiscusStreamReader extends Thread {
 
             dataDiscus.resetSensors();
 
-            int observedSensorCount = (int) Math.floor((double) (data.size() - headerLength) / (double) msgLength);
+            int observedSensorCount = (int) Math.floor((double) (data.size() - headerLength - startFlagLength) / (double) msgLength);
 
             int meta = data.get(0);
 
             baseStation.skip = (byte) getBit(meta, 2);
             baseStation.rotor = (byte) getBit(meta, 1);
             baseStation.data = (byte) getBit(meta, 0);
+
+            boolean shouldPerformPnPSolve = false;
 
             if (observedSensorCount > 0) {
 
@@ -113,13 +119,13 @@ public class DataDiscusStreamReader extends Thread {
                     int readPos = (i * msgLength) + headerLength;
                     int sensorId = data.get(readPos);
 
-                    LighthouseSensor _sensor = dataDiscus.sensors.get(sensorId);
+                    LighthouseSensor _sensor = dataDiscus.sensors.get(sensorId - 2);
 
                     _sensor.deltaT = (((data.get(readPos + 1) & 0xFF) << 24) | ((data.get(readPos + 2) & 0xFF) << 16) | ((data.get(readPos + 3) & 0xFF) << 8) | (data.get(readPos + 4) & 0xFF));
 
-                    if (baseStation.rotor == 0) {
+                    double angle = getAngle(_sensor.deltaT);
 
-                        double angle = getAngle(_sensor.deltaT);
+                    if (baseStation.rotor == 0) {
 
                         if (angle != -1) {
                             _sensor.angles[0] = getAngle(_sensor.deltaT);
@@ -131,12 +137,11 @@ public class DataDiscusStreamReader extends Thread {
 //                            }
 
                             _sensor.sawSweep = true;
+                            shouldPerformPnPSolve = true;
 
                         }
 
                     } else {
-
-                        double angle = getAngle(_sensor.deltaT);
 
                         if (angle != -1) {
                             _sensor.angles[1] = getAngle(_sensor.deltaT);
@@ -156,15 +161,17 @@ public class DataDiscusStreamReader extends Thread {
                     if (_sensor.sawSweep) {
 //                        Log.i("DataDiscus", String.valueOf(_sensor.angles[0]) + " " + String.valueOf(_sensor.angles[1]));
                         Point point = new Point(_sensor.position2D[0], _sensor.position2D[1]);
+                        Log.i(TAG, "Sensor " + String.valueOf(_sensor.id) + " has pos" + String.valueOf(_sensor.position2D[0]) + " " + String.valueOf(_sensor.position2D[1]));
 
                         // Populate the image and object points lists with the sensors that were observed
                         observedImgPointsList.add(point);
-                        observedObjPointsList.add(dataDiscus.objPointsList.get(sensorId));
+                        observedObjPointsList.add(dataDiscus.objPointsList.get(sensorId - 2));
+
                     }
 
-//
-
                 }
+                Log.i(TAG, "Starting solve");
+                int b = 0;
 
                 MatOfPoint2f _imgPoints = new MatOfPoint2f();
                 MatOfPoint3f _objPoints = new MatOfPoint3f();
@@ -173,6 +180,7 @@ public class DataDiscusStreamReader extends Thread {
                 _objPoints.fromList(observedObjPointsList);
 
 //                Log.i("Solver", observedImgPointsList.toString());
+
 
                 return solvePnP(_objPoints, _imgPoints);
 
