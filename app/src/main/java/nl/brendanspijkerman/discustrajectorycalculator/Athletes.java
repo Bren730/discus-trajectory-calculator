@@ -23,7 +23,7 @@ public class Athletes {
 
         if (!this.entries.contains(athlete)) {
 
-            this.entries.add(athlete);
+            this.entries.add(0, athlete);
             return true;
 
         } else {

@@ -9,12 +9,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.UUID;
 
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import nl.brendanspijkerman.discustrajectorycalculator.activities.DiscusTrackerActivity;
 import nl.brendanspijkerman.discustrajectorycalculator.adapters.AthletesAdapter;
 
@@ -48,7 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
+//            recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            SlideInLeftAnimator animator = new SlideInLeftAnimator();
+            animator.setInterpolator(new OvershootInterpolator());
+            animator.setAddDuration(500);
+
+            recyclerView.setItemAnimator(animator);
+
             recyclerView.setAdapter(mAthletesAdapter);
 
             mAthletesAdapter.notifyDataSetChanged();
@@ -97,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
             if (athlete != null) {
 
                 athletes.addAthlete(athlete);
-                mAthletesAdapter.notifyItemInserted(athletes.entries.size() - 1);
+                mAthletesAdapter.notifyItemInserted(0);
+                recyclerView.smoothScrollToPosition(0);
 
             }
 

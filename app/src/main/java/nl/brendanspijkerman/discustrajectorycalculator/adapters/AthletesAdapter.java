@@ -3,6 +3,7 @@ package nl.brendanspijkerman.discustrajectorycalculator.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import nl.brendanspijkerman.discustrajectorycalculator.Athlete;
@@ -72,11 +74,12 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
         Athlete athlete = athletesList.get(position);
         holder.athleteName.setText(athlete.getName());
 
-        Bitmap bmp = BitmapFactory.decodeFile(athlete.photoUri.getPath());
-        holder.athletePhoto.setImageBitmap(Bitmap.createScaledBitmap(bmp, 400, 400, false));
-        bmp.recycle();
+        BitmapWorkerTask task = new BitmapWorkerTask(holder.athletePhoto);
+        task.execute(athlete);
 
-//        setAnimation(holder.itemView, position);
+//        Bitmap bmp = BitmapFactory.decodeFile(athlete.photoUri.getPath());
+//        holder.athletePhoto.setImageBitmap(Bitmap.createScaledBitmap(bmp, 400, 400, false));
+//        bmp.recycle();
 
 //        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 //        bitmapOptions.inJustDecodeBounds = true;
@@ -99,6 +102,34 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
 //
 //        }
 
+    }
+
+    class BitmapWorkerTask extends AsyncTask<Athlete, Void, Bitmap> {
+        private final WeakReference<ImageView> imageViewReference;
+        private int data = 0;
+
+        public BitmapWorkerTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
+
+        // Decode image in background.
+        @Override
+        protected Bitmap doInBackground(Athlete... params) {
+            Bitmap bmp = BitmapFactory.decodeFile(params[0].photoUri.getPath());
+            return Bitmap.createScaledBitmap(bmp, 400, 400, false);
+        }
+
+        // Once complete, see if ImageView is still around and set bitmap.
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
     }
 
     @Override

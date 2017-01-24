@@ -46,4 +46,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.github.clans:fab:1.6.4'
     compile project(':openCVLibrary320')
+    compile 'jp.wasabeef:recyclerview-animators:2.2.3'
 }
