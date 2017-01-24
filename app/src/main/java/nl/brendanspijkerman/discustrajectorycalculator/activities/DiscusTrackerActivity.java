@@ -296,7 +296,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     public void stopReader(View view) {
 
-
+        dataDiscusStreamReader.stopThread();
 
     }
 
