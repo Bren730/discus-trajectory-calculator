@@ -1,7 +1,9 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
 import android.net.Uri;
+import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -11,7 +13,7 @@ import nl.brendanspijkerman.discustrajectorycalculator.models.Gender;
  * Created by Brendan on 27-11-2016.
  */
 
-public class Athlete {
+public class Athlete implements Serializable {
 
     public String name;
     public UUID id;

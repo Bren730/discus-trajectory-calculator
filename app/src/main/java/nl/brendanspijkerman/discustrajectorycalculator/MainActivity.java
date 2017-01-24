@@ -1,12 +1,19 @@
 package nl.brendanspijkerman.discustrajectorycalculator;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.UUID;
 
 import nl.brendanspijkerman.discustrajectorycalculator.activities.DiscusTrackerActivity;
 import nl.brendanspijkerman.discustrajectorycalculator.adapters.AthletesAdapter;
@@ -17,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private Athletes athletes;
     private RecyclerView recyclerView;
     private AthletesAdapter mAthletesAdapter;
+
+    static final int NEW_ATHLETE_REQUEST = 1;
+
+    private static final String TAG = "MainActivity";
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -43,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
             mAthletesAdapter.notifyDataSetChanged();
         } catch (Exception e) {
 
-            int b = 0;
-
         }
 
     }
@@ -63,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NewAthleteActivity.class);
 //        Variables variables = new Variables(20, 35, 0, 1.8);
 //        intent.putExtra("variables", variables);
-        startActivity(intent);
+        startActivityForResult(intent, NEW_ATHLETE_REQUEST);
 
     }
 
@@ -73,9 +82,32 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == NEW_ATHLETE_REQUEST) {
+
+            String athleteId = data.getStringExtra("athleteId");
+
+            Storage storage = new Storage(this);
+            Athlete athlete = storage.loadAthlete(UUID.fromString(athleteId));
+
+            int gh = 1;
+
+            if (athlete != null) {
+
+                athletes.addAthlete(athlete);
+                mAthletesAdapter.notifyItemInserted(athletes.entries.size() - 1);
+
+            }
+
+            if (resultCode == RESULT_OK) {
+
+                int b = 0;
+
+            }
+        }
+
+    }
+
 }

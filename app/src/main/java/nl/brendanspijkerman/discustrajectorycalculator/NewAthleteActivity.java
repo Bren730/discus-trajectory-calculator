@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -18,8 +19,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,6 +45,8 @@ public class NewAthleteActivity extends AppCompatActivity {
     private Uri _photoUri = null;
 
     static final int REQUEST_TAKE_PHOTO = 1;
+
+    private static final String TAG = "NewAthleteActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,11 +240,16 @@ public class NewAthleteActivity extends AppCompatActivity {
                 Athletes athletes = storage.loadAthletes();
                 athletes.addAthlete(athlete);
                 storage.saveAthletes(athletes);
+
+                Intent intent = new Intent();
+                intent.putExtra("athleteId", athlete.id.toString());
+                setResult(RESULT_OK, intent);
+
                 finish();
 
-            } catch (Exception ex) {
+            } catch (Exception e) {
 
-
+                Log.e(TAG, e.toString());
 
             }
 
