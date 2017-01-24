@@ -161,7 +161,7 @@ public class DataDiscusStreamReader extends Thread {
                     if (_sensor.sawSweep) {
 //                        Log.i("DataDiscus", String.valueOf(_sensor.angles[0]) + " " + String.valueOf(_sensor.angles[1]));
                         Point point = new Point(_sensor.position2D[0], _sensor.position2D[1]);
-                        Log.i(TAG, "Sensor " + String.valueOf(_sensor.id) + " has pos" + String.valueOf(_sensor.position2D[0]) + " " + String.valueOf(_sensor.position2D[1]));
+//                        Log.i(TAG, "Sensor " + String.valueOf(_sensor.id) + " has pos" + String.valueOf(_sensor.position2D[0]) + " " + String.valueOf(_sensor.position2D[1]));
 
                         // Populate the image and object points lists with the sensors that were observed
                         observedImgPointsList.add(point);

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.ParcelUuid;
@@ -20,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +67,9 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    TextView posTv;
+    TextView mPositionTextView;
+    ProgressBar mProgressBar;
+    TextView mProgressBarTextView;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -78,6 +82,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     // OpenCV loaded, BaseStation and DataDiscus classes can now be constructed
                     baseStation = new BaseStation(120);
                     dataDiscus = new DataDiscus(10, 0.07753, 0.00667, baseStation);
+                    startDeviceDiscovery();
 //                    dataDiscusStreamReader = new DataDiscusStreamReader(inputStream, dataDiscus);
 
                 } break;
@@ -96,7 +101,9 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
         setTitle("Discus Tracker");
 
-        posTv = (TextView) findViewById(R.id.discus_position);
+        mPositionTextView = (TextView) findViewById(R.id.discus_position);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mProgressBarTextView = (TextView) findViewById(R.id.progress_bar_textview);
 
         // First request user permission to use coarse location
         // This is needed to scan for Bluetooth devices
@@ -158,7 +165,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     String data = "Position: x %s, y %s, z %s";
                     String output = String.format(data, x, y, z);
 
-                    posTv.setText(output);
+                    mPositionTextView.setText(output);
                 } catch (Exception e) {
 //                    Log.e(TAG, e.toString());
                 }
@@ -223,11 +230,17 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                         Log.i(TAG, "Found Data Discus");
 
+                        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorGreen), PorterDuff.Mode.MULTIPLY);
+                        mProgressBarTextView.setText("Found Data Discus, connecting...");
+
                         BluetoothDevice dataDiscusDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
 
                         Method m = dataDiscusDevice.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
                         BluetoothSocket socket = (BluetoothSocket) m.invoke(dataDiscusDevice, Integer.valueOf(1));
                         socket.connect();
+
+//                        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorGreen), PorterDuff.Mode.MULTIPLY);
+                        mProgressBarTextView.setText("Connected");
 
                         TextView connectionStatus = (TextView) findViewById(R.id.connection_status);
 
@@ -280,25 +293,6 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
         MatOfPoint3f objPoints = new MatOfPoint3f();
         objPoints.fromList(objPointsList);
-
-    }
-
-    public void openCvTestClick(View view) {
-//        byte[] msg = {2};
-//        tx.setValue(msg);
-//
-//        if (mGatt.writeCharacteristic(tx)) {
-//            Log.i("Sent: ", msg.toString());
-//        }
-
-//        checkPairedDevices();
-        startDeviceDiscovery();
-//        solvePnPTest();
-    }
-
-    public void stopReader(View view) {
-
-        dataDiscusStreamReader.stopThread();
 
     }
 

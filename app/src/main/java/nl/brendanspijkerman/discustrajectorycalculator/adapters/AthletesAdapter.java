@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,11 +34,15 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
     private List<Athlete> athletesList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        FrameLayout container;
+
         public TextView athleteName;
         public ImageView athletePhoto;
 
         public MyViewHolder(View view) {
             super(view);
+            container = (FrameLayout) view.findViewById(R.id.recycler_view);
             athleteName = (TextView) view.findViewById(R.id.athlete_name);
             athletePhoto = (ImageView) view.findViewById(R.id.athlete_photo);
         }
@@ -45,7 +50,9 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
 
 
     public AthletesAdapter(List<Athlete> athletesList) {
+
         this.athletesList = athletesList;
+
     }
 
     @Override

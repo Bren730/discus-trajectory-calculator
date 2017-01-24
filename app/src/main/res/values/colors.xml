@@ -17,6 +17,8 @@
     <color name="colorAccentDark">#556c80</color>
     <color name="colorAccentDark2">#445666</color>
 
+    <color name="colorGreen">#72bf49</color>
+
     <!--Standard colors-->
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>

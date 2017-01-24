@@ -36,17 +36,21 @@
             android:id="@+id/discus_rotation"
             android:text="Rotation"/>
 
-        <Button
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Connect"
-            android:onClick="openCvTestClick"/>
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/progress_bar"
+            android:indeterminateOnly="false"
+            android:indeterminate="true"
+            android:max="1"/>
 
-        <Button
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stop"
-            android:onClick="stopReader"/>
+            android:text="Looking for Data Discus"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/progress_bar_textview"/>
 
     </LinearLayout>
 
