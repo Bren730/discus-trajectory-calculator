@@ -106,27 +106,32 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == NEW_ATHLETE_REQUEST) {
 
-            String athleteId = data.getStringExtra("athleteId");
+            try {
 
-            Storage storage = new Storage(this);
-            Athlete athlete = storage.loadAthlete(UUID.fromString(athleteId));
+                String athleteId = data.getStringExtra("athleteId");
 
-            int gh = 1;
+                Storage storage = new Storage(this);
+                Athlete athlete = storage.loadAthlete(UUID.fromString(athleteId));
 
-            if (athlete != null) {
+                int gh = 1;
 
-                athletes.addAthlete(athlete);
+                if (athlete != null) {
 
-                // Update UI after X time
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAthletesAdapter.notifyItemInserted(0);
-                        recyclerView.smoothScrollToPosition(0);
-                    }
-                }, 300);
+                    athletes.addAthlete(athlete);
 
+                    // Update UI after X time
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAthletesAdapter.notifyItemInserted(0);
+                            recyclerView.smoothScrollToPosition(0);
+                        }
+                    }, 300);
+
+
+                }
+            } catch (Exception e) {
 
             }
 
