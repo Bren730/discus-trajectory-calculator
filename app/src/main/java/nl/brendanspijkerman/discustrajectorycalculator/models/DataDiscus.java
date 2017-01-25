@@ -42,8 +42,8 @@ public class DataDiscus {
     public ArrayList<Point3> objPointsList = new ArrayList<>();
 
     // 120 measurements per second, for five seconds
-    public ArrayList<double[]> position = new ArrayList<>(120 * 5);
-    public ArrayList<double[]> rotation = new ArrayList<>(120 * 5);
+    public ArrayList<Position> positions = new ArrayList<>(120 * 5);
+    public ArrayList<double[]> rotations = new ArrayList<>(120 * 5);
     public Mat rotationMatrix = new Mat();
     public double[] rotationMatrixArray = new double[16];
     public Mat rVecs = new Mat(3, 1, CvType.CV_64FC1);
@@ -104,10 +104,12 @@ public class DataDiscus {
         posTimestamp = System.currentTimeMillis();
         long timeDiff = posTimestamp - prevPosTimestamp;
 
-        position.add(0, pos);
+        Position newPosition = new Position(pos, posTimestamp);
 
-        double posA[] = position.get(0);
-        double posB[] = position.get(1);
+        positions.add(0, newPosition);
+
+        double posA[] = positions.get(0).coordinates;
+        double posB[] = positions.get(1).coordinates;
 
         double difference[] = new double[3];
 
@@ -118,7 +120,7 @@ public class DataDiscus {
         double distance = Math.sqrt(Math.pow(difference[0], 2) + Math.pow(difference[1], 2) + Math.pow(difference[2], 2));
         speed = distance / ((double)timeDiff / 1000.0);
 
-        if (speed > topSpeed) {
+        if (speed > topSpeed && speed < 30.0) {
             topSpeed = speed;
         }
 

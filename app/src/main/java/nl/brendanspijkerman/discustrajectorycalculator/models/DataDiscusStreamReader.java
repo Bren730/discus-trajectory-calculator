@@ -274,7 +274,7 @@ public class DataDiscusStreamReader extends Thread {
             double[] rot = {xR[0], yR[0], zR[0]};
 
             dataDiscus.setPosition(pos);
-            dataDiscus.rotation.add(0, rot);
+            dataDiscus.rotations.add(0, rot);
 
             return pos;
 

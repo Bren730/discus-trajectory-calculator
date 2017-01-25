@@ -93,7 +93,6 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     // OpenCV loaded, BaseStation and DataDiscus classes can now be constructed
                     baseStation = new BaseStation(120);
                     dataDiscus = new DataDiscus(10, 0.07753, 0.00667, baseStation);
-                    startDeviceDiscovery();
 //                    dataDiscusStreamReader = new DataDiscusStreamReader(inputStream, dataDiscus);
 
                 } break;
@@ -115,6 +114,24 @@ public class DiscusTrackerActivity extends AppCompatActivity {
         renderer = new Renderer(this);
         surface.setSurfaceRenderer(renderer);
         sceneLoaded = true;
+
+
+        final int delay = 1000;
+
+        // Update the UI TextViews every X milliseconds
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable()
+        {
+            private long time = 0;
+
+            @Override
+            public void run()
+            {
+
+                startDeviceDiscovery();
+
+            }
+        }, delay); // 1 second delay (takes millis)
 
     }
 
@@ -185,16 +202,16 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                     int b = 0;
 
-                    String x = String.format("%.2f", dataDiscus.position.get(0)[0]);
-                    String y = String.format("%.2f", dataDiscus.position.get(0)[1]);
-                    String z = String.format("%.2f", dataDiscus.position.get(0)[2]);
+                    String x = String.format("%.2f", dataDiscus.positions.get(0).coordinates[0]);
+                    String y = String.format("%.2f", dataDiscus.positions.get(0).coordinates[1]);
+                    String z = String.format("%.2f", dataDiscus.positions.get(0).coordinates[2]);
 
-                    String speed = String.format("Speed: %.2f m/s", dataDiscus.speed);
+                    String speed = String.format("Speed: %.2f m/s, top speed: %.2f", dataDiscus.speed, dataDiscus.topSpeed);
                     mSpeedTextView.setText(speed);
 
-                    double xPos = dataDiscus.position.get(0)[0] * 1000.0;
-                    double yPos = dataDiscus.position.get(0)[1] * 1000.0;
-                    double zPos = dataDiscus.position.get(0)[2] * 1000.0;
+                    double xPos = dataDiscus.positions.get(0).coordinates[0] * 1000.0;
+                    double yPos = dataDiscus.positions.get(0).coordinates[1] * 1000.0;
+                    double zPos = dataDiscus.positions.get(0).coordinates[2] * 1000.0;
 
                     double[] xR = new double[1];
                     double[] yR = new double[1];
@@ -307,7 +324,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 //                        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorGreen), PorterDuff.Mode.MULTIPLY);
                         mProgressBarTextView.setText("Connected");
 
-                        final int delay = 2000;
+                        final int delay = 4000;
 
                         // Update the UI TextViews every X milliseconds
                         final Handler h = new Handler();
@@ -321,7 +338,6 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                                 mProgressBar.setVisibility(View.GONE);
                                 mProgressBarTextView.setVisibility(View.GONE);
-                                h.postDelayed(this, delay);
 
                             }
                         }, delay); // 1 second delay (takes millis)
