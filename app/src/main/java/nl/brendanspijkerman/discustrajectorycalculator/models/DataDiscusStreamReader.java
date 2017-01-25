@@ -214,9 +214,6 @@ public class DataDiscusStreamReader extends Thread {
 
     double getScreenX(double angle) {
 
-        // Invert the angle so the X-direction matches that of the base station pov
-        angle *= -1;
-
         double xPos;
         double max = Math.tan((Math.toRadians(baseStation.fov) / 2.0));
         double perc = Math.tan(Math.toRadians(angle)) / max;
@@ -229,7 +226,7 @@ public class DataDiscusStreamReader extends Thread {
 
     double getScreenY(double angle) {
 
-        return getScreenX(-angle);
+        return getScreenX(angle);
 
     }
 

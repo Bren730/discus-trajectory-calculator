@@ -17,10 +17,12 @@ import android.os.Handler;
 import android.os.ParcelUuid;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,8 @@ import org.opencv.core.MatOfPoint3;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
+import org.rajawali3d.surface.IRajawaliSurface;
+import org.rajawali3d.surface.RajawaliSurfaceView;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -46,6 +50,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import nl.brendanspijkerman.discustrajectorycalculator.R;
+import nl.brendanspijkerman.discustrajectorycalculator.Renderer;
 import nl.brendanspijkerman.discustrajectorycalculator.models.BaseStation;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscus;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscusStreamReader;
@@ -71,6 +76,9 @@ public class DiscusTrackerActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
     TextView mProgressBarTextView;
 
+    Renderer renderer;
+    boolean sceneLoaded = false;
+
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -94,10 +102,25 @@ public class DiscusTrackerActivity extends AppCompatActivity {
         }
     };
 
+    private void load3DScene() {
+
+        final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
+        surface.setFrameRate(60.0);
+        surface.setRenderMode(IRajawaliSurface.RENDERMODE_CONTINUOUSLY);
+        addContentView(surface, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT));
+
+        renderer = new Renderer(this);
+        surface.setSurfaceRenderer(renderer);
+        sceneLoaded = true;
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discus_tracker);
+
+        load3DScene();
 
         setTitle("Discus Tracker");
 
@@ -161,6 +184,19 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     String x = String.format("%.2f", dataDiscus.position.get(0)[0]);
                     String y = String.format("%.2f", dataDiscus.position.get(0)[1]);
                     String z = String.format("%.2f", dataDiscus.position.get(0)[2]);
+
+                    double xPos = dataDiscus.position.get(0)[0] * 1000.0;
+                    double yPos = dataDiscus.position.get(0)[1] * 1000.0;
+                    double zPos = dataDiscus.position.get(0)[2] * 1000.0;
+
+                    if(sceneLoaded) {
+
+                        try {
+                            renderer.discus.setPosition(xPos, yPos, zPos);
+                        } catch (Exception e) {
+                            Log.e("RendererInActivity", e.toString());
+                        }
+                    }
 
                     String data = "Position: x %s, y %s, z %s";
                     String output = String.format(data, x, y, z);
@@ -245,6 +281,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                         TextView connectionStatus = (TextView) findViewById(R.id.connection_status);
 
                         connectionStatus.setText("Connected!");
+//                        load3DScene();
 
 //                        inputStream = socket.getInputStream();
 
