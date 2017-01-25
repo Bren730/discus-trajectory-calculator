@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             athletes = storage.loadAthletes();
 
-            mAthletesAdapter = new AthletesAdapter(athletes.entries);
+            mAthletesAdapter = new AthletesAdapter(this, athletes.entries);
 
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(mLayoutManager);

@@ -44,6 +44,9 @@ public class DataDiscus {
     // 120 measurements per second, for five seconds
     public ArrayList<double[]> position = new ArrayList<>(120 * 5);
     public ArrayList<double[]> rotation = new ArrayList<>(120 * 5);
+    public Mat rotationMatrix = new Mat();
+    public double[] rotationMatrixArray = new double[16];
+    public Mat rVecs = new Mat(3, 1, CvType.CV_64FC1);
     public double velocity;
 
     final double CPU_SPEED = 96.0; // CPU speed in MHz

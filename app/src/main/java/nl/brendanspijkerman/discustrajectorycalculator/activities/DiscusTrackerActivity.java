@@ -38,6 +38,8 @@ import org.opencv.core.MatOfPoint3;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
+import org.rajawali3d.math.Matrix4;
+import org.rajawali3d.math.Quaternion;
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
 
@@ -189,10 +191,32 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     double yPos = dataDiscus.position.get(0)[1] * 1000.0;
                     double zPos = dataDiscus.position.get(0)[2] * 1000.0;
 
+                    double[] xR = new double[1];
+                    double[] yR = new double[1];
+                    double[] zR = new double[1];
+                    double[] rot = new double[1];
+
+                    dataDiscus.rVecs.get(0, 0, xR);
+                    dataDiscus.rVecs.get(1, 0, yR);
+                    dataDiscus.rVecs.get(2, 0, zR);
+                    dataDiscus.rVecs.get(0, 1, rot);
+
+                    double xRot = (xR[0] / Math.PI) * 180;
+                    double yRot = (yR[0] / Math.PI) * 180;
+                    double zRot = (zR[0] / Math.PI) * 180;
+
+//                    Log.i(TAG, String.valueOf(xR[0]) + ", " + String.valueOf(yR[0]) + ", " + String.valueOf(zR[0]) + ", " + String.valueOf(rot[0]) );
+
+                    Quaternion quaternion = new Quaternion();
+                    Matrix4 mat = new Matrix4(dataDiscus.rotationMatrixArray);
+                    quaternion.fromMatrix(mat);
+
                     if(sceneLoaded) {
 
                         try {
                             renderer.discus.setPosition(xPos, yPos, zPos);
+//                            renderer.discus.setRotation(xRot, yRot, zRot);
+
                         } catch (Exception e) {
                             Log.e("RendererInActivity", e.toString());
                         }

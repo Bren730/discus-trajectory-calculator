@@ -44,6 +44,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/athlete_new_training"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
             android:text="@string/new_training"
             android:textColor="@color/colorPrimary"
             android:minWidth="0dp"
-            android:minHeight="0dp"/>
+            android:minHeight="0dp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

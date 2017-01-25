@@ -75,7 +75,7 @@ public class DataDiscusStreamReader extends Thread {
                         double y = pos[1];
                         double z = pos[2];
 
-                        Log.i(TAG, String.valueOf(x) + ", " + String.valueOf(y) + ", " + String.valueOf(z));
+//                        Log.i(TAG, String.valueOf(x) + ", " + String.valueOf(y) + ", " + String.valueOf(z));
                     } catch (Exception e) {
 //                        Log.e(TAG, e.toString());
                     }
@@ -170,7 +170,7 @@ public class DataDiscusStreamReader extends Thread {
                     }
 
                 }
-                Log.i(TAG, "Starting solve");
+//                Log.i(TAG, "Starting solve");
                 int b = 0;
 
                 MatOfPoint2f _imgPoints = new MatOfPoint2f();
@@ -238,9 +238,21 @@ public class DataDiscusStreamReader extends Thread {
         try {
 
             Calib3d.solvePnP(_objPoints, _imgPoints, baseStation.cameraMatrix, baseStation.distortionCoefficients, outputR, outputT);
+//            Calib3d.solvePnP(_objPoints, _imgPoints, baseStation.cameraMatrix, baseStation.distortionCoefficients, outputR, outputT, false, Calib3d.CV_EPNP);
+
+            dataDiscus.rVecs = outputR;
 
             Mat rMat = new Mat();
             Calib3d.Rodrigues(outputR, rMat);
+
+            // Transpose the matrix
+//            rMat = rMat.t();
+            dataDiscus.rotationMatrix = rMat;
+
+            // Put rotation matrix to dataDiscus
+            rMat.get(0, 0, dataDiscus.rotationMatrixArray);
+
+//            dataDiscus.rotationMatrixArray = (double)rMat.;
 
             double[] x = new double[1];
             double[] y = new double[1];

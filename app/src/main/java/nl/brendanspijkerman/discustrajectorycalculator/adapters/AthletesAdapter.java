@@ -1,24 +1,29 @@
 package nl.brendanspijkerman.discustrajectorycalculator.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import nl.brendanspijkerman.discustrajectorycalculator.Athlete;
 import nl.brendanspijkerman.discustrajectorycalculator.R;
+import nl.brendanspijkerman.discustrajectorycalculator.activities.DiscusTrackerActivity;
 
 
 /**
@@ -31,12 +36,6 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
 
     private int lastPosition = -1;
 
-    AthletesAdapter(Context _context) {
-
-        mContext = _context;
-
-    }
-
     private List<Athlete> athletesList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -45,18 +44,21 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
 
         public TextView athleteName;
         public ImageView athletePhoto;
+        public Button newTrainingBtn;
 
         public MyViewHolder(View view) {
             super(view);
             container = (FrameLayout) view.findViewById(R.id.recycler_view);
             athleteName = (TextView) view.findViewById(R.id.athlete_name);
             athletePhoto = (ImageView) view.findViewById(R.id.athlete_photo);
+            newTrainingBtn = (Button) view.findViewById(R.id.athlete_new_training);
         }
     }
 
 
-    public AthletesAdapter(List<Athlete> athletesList) {
+    public AthletesAdapter(Context _context, List<Athlete> athletesList) {
 
+        this.mContext = _context;
         this.athletesList = athletesList;
 
     }
@@ -77,30 +79,16 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
         BitmapWorkerTask task = new BitmapWorkerTask(holder.athletePhoto);
         task.execute(athlete);
 
-//        Bitmap bmp = BitmapFactory.decodeFile(athlete.photoUri.getPath());
-//        holder.athletePhoto.setImageBitmap(Bitmap.createScaledBitmap(bmp, 400, 400, false));
-//        bmp.recycle();
+        holder.newTrainingBtn.setOnClickListener(new View.OnClickListener() {
 
-//        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-//        bitmapOptions.inJustDecodeBounds = true;
-//        try {
-//            BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(athlete.photoUri), null, bitmapOptions);
-//        } catch (Exception e) {
-//
-//        }
-//
-//        bitmapOptions.inSampleSize = calculateInSampleSize(bitmapOptions, 100, 100);
-//        bitmapOptions.inJustDecodeBounds = false;
-//
-//        try {
-//
-//            InputStream inputStream = mContext.getContentResolver().openInputStream(athlete.photoUri);
-//            Bitmap scaledBitmap = BitmapFactory.decodeStream(inputStream, null, bitmapOptions);
-//            holder.athletePhoto.setImageBitmap(scaledBitmap);
-//
-//        } catch (Exception e) {
-//
-//        }
+            @Override
+            public void onClick(View view) {
+                int b = 0;
+                Intent intent = new Intent(mContext, DiscusTrackerActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 
@@ -116,8 +104,31 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
         // Decode image in background.
         @Override
         protected Bitmap doInBackground(Athlete... params) {
-            Bitmap bmp = BitmapFactory.decodeFile(params[0].photoUri.getPath());
-            return Bitmap.createScaledBitmap(bmp, 400, 400, false);
+//            Bitmap bmp = BitmapFactory.decodeFile(params[0].photoUri.getPath());
+//            return Bitmap.createScaledBitmap(bmp, 400, 400, false);
+
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            bitmapOptions.inJustDecodeBounds = true;
+            try {
+                BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(params[0].photoUri), null, bitmapOptions);
+            } catch (Exception e) {
+
+            }
+
+            bitmapOptions.inSampleSize = calculateInSampleSize(bitmapOptions, 150, 150);
+            bitmapOptions.inJustDecodeBounds = false;
+
+            try {
+
+                InputStream inputStream = mContext.getContentResolver().openInputStream(params[0].photoUri);
+                Bitmap scaledBitmap = BitmapFactory.decodeStream(inputStream, null, bitmapOptions);
+                return scaledBitmap;
+
+            } catch (Exception e) {
+
+            }
+
+            return null;
         }
 
         // Once complete, see if ImageView is still around and set bitmap.
@@ -158,16 +169,6 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
         }
 
         return inSampleSize;
-    }
-
-    private void setAnimation(View viewToAnimate, int position) {
-
-        if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
-            viewToAnimate.startAnimation(animation);
-            lastPosition = position;
-        }
-
     }
 
 }

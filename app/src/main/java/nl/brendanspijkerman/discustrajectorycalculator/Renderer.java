@@ -66,6 +66,7 @@ public class Renderer extends RajawaliRenderer {
             }
 
             discus.setPosition(0, 0, 300);
+            discus.setScale(3);
             getCurrentScene().addChild(discus);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
