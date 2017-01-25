@@ -17,6 +17,9 @@ import com.google.gson.GsonBuilder;
 
 import java.util.UUID;
 
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import nl.brendanspijkerman.discustrajectorycalculator.activities.DiscusTrackerActivity;
@@ -60,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
             recyclerView.setItemAnimator(animator);
 
-            recyclerView.setAdapter(mAthletesAdapter);
+            int adapterAnimLength = 300;
+
+            AlphaInAnimationAdapter adapterAnimation = new AlphaInAnimationAdapter(mAthletesAdapter);
+            adapterAnimation.setDuration(adapterAnimLength);
+
+            recyclerView.setAdapter(adapterAnimation);
 
             mAthletesAdapter.notifyDataSetChanged();
         } catch (Exception e) {

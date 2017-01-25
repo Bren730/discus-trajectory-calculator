@@ -21,6 +21,7 @@
     <!--Placeholder strings-->
     <string name="meters">%1$.2f m</string>
     <string name="meters_per_second">%1$.2f m/s</string>
+    <string name="kilometers_per_hour">%1$.2f km/h</string>
     <string name="degrees">%1$.2f°</string>
 
     <!--Menu item strings-->

@@ -62,8 +62,10 @@ public class Renderer extends RajawaliRenderer {
             discus.setMaterial(material);
 
             for (int i = 0; i < discus.getNumObjects(); i++) {
-//                discus.getChildAt(i).setMaterial(material);
+                discus.getChildAt(i).setMaterial(material);
             }
+
+            discus.setMaterial(material);
 
             discus.setPosition(0, 0, 300);
             discus.setScale(3);

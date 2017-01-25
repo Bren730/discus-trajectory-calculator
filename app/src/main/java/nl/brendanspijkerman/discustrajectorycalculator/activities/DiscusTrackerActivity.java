@@ -75,6 +75,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     TextView mPositionTextView;
+    TextView mSpeedTextView;
     ProgressBar mProgressBar;
     TextView mProgressBarTextView;
 
@@ -106,10 +107,10 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
     private void load3DScene() {
 
-        final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
-        surface.setFrameRate(60.0);
-        surface.setRenderMode(IRajawaliSurface.RENDERMODE_CONTINUOUSLY);
-        addContentView(surface, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT));
+        final RajawaliSurfaceView surface = (RajawaliSurfaceView) findViewById(R.id.rajwali_surface);
+//        surface.setFrameRate(60.0);
+//        surface.setRenderMode(IRajawaliSurface.RENDERMODE_CONTINUOUSLY);
+//        addContentView(surface, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT));
 
         renderer = new Renderer(this);
         surface.setSurfaceRenderer(renderer);
@@ -127,6 +128,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
         setTitle("Discus Tracker");
 
         mPositionTextView = (TextView) findViewById(R.id.discus_position);
+        mSpeedTextView = (TextView) findViewById(R.id.discus_speed);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mProgressBarTextView = (TextView) findViewById(R.id.progress_bar_textview);
 
@@ -186,6 +188,9 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                     String x = String.format("%.2f", dataDiscus.position.get(0)[0]);
                     String y = String.format("%.2f", dataDiscus.position.get(0)[1]);
                     String z = String.format("%.2f", dataDiscus.position.get(0)[2]);
+
+                    String speed = String.format("Speed: %.2f m/s", dataDiscus.speed);
+                    mSpeedTextView.setText(speed);
 
                     double xPos = dataDiscus.position.get(0)[0] * 1000.0;
                     double yPos = dataDiscus.position.get(0)[1] * 1000.0;
@@ -302,12 +307,24 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 //                        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorGreen), PorterDuff.Mode.MULTIPLY);
                         mProgressBarTextView.setText("Connected");
 
-                        TextView connectionStatus = (TextView) findViewById(R.id.connection_status);
+                        final int delay = 2000;
 
-                        connectionStatus.setText("Connected!");
-//                        load3DScene();
+                        // Update the UI TextViews every X milliseconds
+                        final Handler h = new Handler();
+                        h.postDelayed(new Runnable()
+                        {
+                            private long time = 0;
 
-//                        inputStream = socket.getInputStream();
+                            @Override
+                            public void run()
+                            {
+
+                                mProgressBar.setVisibility(View.GONE);
+                                mProgressBarTextView.setVisibility(View.GONE);
+                                h.postDelayed(this, delay);
+
+                            }
+                        }, delay); // 1 second delay (takes millis)
 
                         try {
 

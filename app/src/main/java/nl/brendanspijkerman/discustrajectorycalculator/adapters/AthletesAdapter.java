@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.brendanspijkerman.discustrajectorycalculator.Athlete;
@@ -57,6 +58,17 @@ public class AthletesAdapter extends RecyclerView.Adapter<AthletesAdapter.MyView
 
 
     public AthletesAdapter(Context _context, List<Athlete> athletesList) {
+
+        // Uncomment to inflate the list by an integer factor
+//        List<Athlete> newList = new ArrayList<>();
+//
+//        for (int i = 0; i < athletesList.size(); i++) {
+//
+//            for (int j = 0; j < 10; j++) {
+//                newList.add(athletesList.get(i));
+//            }
+//
+//        }
 
         this.mContext = _context;
         this.athletesList = athletesList;

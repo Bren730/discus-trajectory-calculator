@@ -8,34 +8,16 @@
     android:fitsSystemWindows="true"
     tools:context="nl.brendanspijkerman.discustrajectorycalculator.MainActivity">
 
-    <!--<TextView-->
-    <!--android:id="@+id/sample_text"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="@string/recent_trainings" />-->
-
-    <!--<Button-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="@string/start_new_training"/>-->
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
+        android:paddingTop="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="60dp"
         android:scrollbars="vertical"
         android:clipToPadding="false"/>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--android:layout_margin="@dimen/activity_horizontal_margin"-->
-    <!--android:tint="@android:color/white"-->
-    <!--android:src="@android:drawable/ic_input_add"-->
-    <!--android:onClick="fabClicked"/>-->
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fab"

@@ -47,7 +47,12 @@ public class DataDiscus {
     public Mat rotationMatrix = new Mat();
     public double[] rotationMatrixArray = new double[16];
     public Mat rVecs = new Mat(3, 1, CvType.CV_64FC1);
-    public double velocity;
+
+    // Variables for speed and speed calculations
+    public double speed;
+    public double topSpeed;
+    public long prevPosTimestamp;
+    public long posTimestamp;
 
     final double CPU_SPEED = 96.0; // CPU speed in MHz
     final double SWEEP_CYCLE_TIME = 8333; // Sweep cycle time in us
@@ -90,6 +95,32 @@ public class DataDiscus {
         result.fromList(pointsList);
 
         return result;
+
+    }
+
+    public void setPosition(double pos[]) {
+
+        prevPosTimestamp = posTimestamp;
+        posTimestamp = System.currentTimeMillis();
+        long timeDiff = posTimestamp - prevPosTimestamp;
+
+        position.add(0, pos);
+
+        double posA[] = position.get(0);
+        double posB[] = position.get(1);
+
+        double difference[] = new double[3];
+
+        difference[0] = posA[0] - posB[0];
+        difference[1] = posA[1] - posB[1];
+        difference[2] = posA[2] - posB[2];
+
+        double distance = Math.sqrt(Math.pow(difference[0], 2) + Math.pow(difference[1], 2) + Math.pow(difference[2], 2));
+        speed = distance / ((double)timeDiff / 1000.0);
+
+        if (speed > topSpeed) {
+            topSpeed = speed;
+        }
 
     }
 
