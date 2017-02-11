@@ -229,14 +229,12 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
 //                    Log.i(TAG, String.valueOf(xR[0]) + ", " + String.valueOf(yR[0]) + ", " + String.valueOf(zR[0]) + ", " + String.valueOf(rot[0]) );
 
-                    Quaternion quaternion = new Quaternion();
-                    Matrix4 mat = new Matrix4(dataDiscus.rotationMatrixArray);
-                    quaternion.fromMatrix(mat);
-
                     if(sceneLoaded) {
 
                         try {
                             renderer.discus.setPosition(xPos, yPos, zPos);
+                            Matrix4 mat = new Matrix4(dataDiscus.rotationMatrixArray);
+                            renderer.discus.setRotation(mat);
 //                            renderer.discus.setRotation(xRot, yRot, zRot);
 
                         } catch (Exception e) {
