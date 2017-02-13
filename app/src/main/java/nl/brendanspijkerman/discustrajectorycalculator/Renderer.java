@@ -5,15 +5,20 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import org.opencv.core.Mat;
 import org.rajawali3d.Object3D;
 import org.rajawali3d.cameras.Camera;
 import org.rajawali3d.lights.DirectionalLight;
 import org.rajawali3d.loader.LoaderOBJ;
 import org.rajawali3d.materials.Material;
 import org.rajawali3d.materials.methods.DiffuseMethod;
+import org.rajawali3d.materials.methods.SpecularMethod;
 import org.rajawali3d.math.vector.Vector3;
+import org.rajawali3d.primitives.Line3D;
 import org.rajawali3d.primitives.Sphere;
 import org.rajawali3d.renderer.RajawaliRenderer;
+
+import java.util.Stack;
 
 /**
  * Created by Brendan on 25-1-2017.
@@ -38,13 +43,15 @@ public class Renderer extends RajawaliRenderer {
 
     public void initScene() {
 
+        getCurrentScene().setBackgroundColor(0x00ffffff);
+
         mCamera = getCurrentCamera();
         mCamera.setPosition(0, 0, 0);
         mCamera.setLookAt(0, 0, 1);
         mCamera.setFieldOfView(120);
         mCamera.setFarPlane(5000);
 
-        directionalLight = new DirectionalLight(1f, .2f, -1.0f);
+        directionalLight = new DirectionalLight(-1.0f, -1.0f, 1.0f);
         directionalLight.setColor(1.0f, 1.0f, 1.0f);
         directionalLight.setPower(2);
         getCurrentScene().addLight(directionalLight);
@@ -54,18 +61,26 @@ public class Renderer extends RajawaliRenderer {
         material.setDiffuseMethod(new DiffuseMethod.Lambert());
         material.setColor(Color.GREEN);
 
-        LoaderOBJ loaderOBJ = new LoaderOBJ(context.getResources(), mTextureManager, R.raw.discus_low_poly_obj);
+        Material phongMat = new Material();
+        phongMat.setColor(Color.RED);
+        phongMat.setDiffuseMethod(new DiffuseMethod.Lambert());
+        phongMat.setSpecularMethod(new SpecularMethod.Phong(Color.WHITE, 60));
+        phongMat.enableLighting(true);
+        phongMat.setColorInfluence(1);
+
+        LoaderOBJ loaderOBJ = new LoaderOBJ(context.getResources(), mTextureManager, R.raw.discus_high_poly_obj);
 
         try {
             loaderOBJ.parse();
             discus = loaderOBJ.getParsedObject();
-            discus.setMaterial(material);
+//            discus.setMaterial(phongMat);
 
             for (int i = 0; i < discus.getNumObjects(); i++) {
-                discus.getChildAt(i).setMaterial(material);
+//                discus.getChildAt(i).setMaterial(phongMat);
+//                discus.getChildAt(i).setColor(Color.RED);
             }
 
-            discus.setMaterial(material);
+//            discus.setMaterial(phongMat);
 
             discus.setPosition(0, 0, 1000);
             discus.setScale(3);
@@ -73,12 +88,6 @@ public class Renderer extends RajawaliRenderer {
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-
-//        sphere = new Sphere(180/2, 24, 24);
-//        sphere.setPosition(0, 0, 300);
-//        sphere.setMaterial(material);
-
-//        getCurrentScene().addChild(sphere);
 
     }
 

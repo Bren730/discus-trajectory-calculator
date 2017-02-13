@@ -13,6 +13,11 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
+    <style name="AthleteCardH1">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
     <style name="telemetry">
         <item name="android:textSize">25sp</item>
         <item name="android:fontFamily">sans-serif-light</item>

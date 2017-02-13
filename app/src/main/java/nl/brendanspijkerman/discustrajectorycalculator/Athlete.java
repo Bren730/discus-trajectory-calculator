@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -26,6 +27,8 @@ public class Athlete implements Serializable {
 
     public String uniqueName;
     public String throwingClass;
+
+    public ArrayList<Training> trainings;
 
     Athlete(String _name) {
 

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
@@ -38,8 +39,12 @@ import org.opencv.core.MatOfPoint3;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
+import org.rajawali3d.loader.awd.BlockSimpleMaterial;
+import org.rajawali3d.materials.Material;
 import org.rajawali3d.math.Matrix4;
 import org.rajawali3d.math.Quaternion;
+import org.rajawali3d.math.vector.Vector3;
+import org.rajawali3d.primitives.Line3D;
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
 
@@ -48,6 +53,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -56,6 +62,7 @@ import nl.brendanspijkerman.discustrajectorycalculator.Renderer;
 import nl.brendanspijkerman.discustrajectorycalculator.models.BaseStation;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscus;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscusStreamReader;
+import nl.brendanspijkerman.discustrajectorycalculator.models.Position;
 
 import static org.opencv.core.CvType.CV_64FC1;
 
@@ -237,6 +244,15 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                         try {
                             renderer.discus.setPosition(xPos, yPos, zPos);
+
+//                            Stack<Vector3> points = new Stack<>();
+//                            for (Position pos : dataDiscus.positions) {
+//                                Vector3 point = new Vector3(pos.coordinates[0], pos.coordinates[1], pos.coordinates[2]);
+//                                points.add(point);
+//                            }
+//
+//                            renderer.line = new Line3D(points, 1, 0xffffff00);
+
 //                            renderer.discus.setRotation(xRot, yRot, zRot);
 
                         } catch (Exception e) {
