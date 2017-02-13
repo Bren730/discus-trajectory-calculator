@@ -232,25 +232,64 @@ public class DataDiscusStreamReader extends Thread {
 
     public double[] solvePnP(MatOfPoint3f _objPoints, MatOfPoint2f _imgPoints) {
 
-        Mat outputR = new Mat(3, 1, CvType.CV_64FC1);
-        Mat outputT = new Mat(3, 1, CvType.CV_64FC1);
+        Mat rvecs = new Mat(3, 1, CvType.CV_64FC1);
+        Mat tvecs = new Mat(3, 1, CvType.CV_64FC1);
 
         try {
 
-            Calib3d.solvePnP(_objPoints, _imgPoints, baseStation.cameraMatrix, baseStation.distortionCoefficients, outputR, outputT);
-//            Calib3d.solvePnP(_objPoints, _imgPoints, baseStation.cameraMatrix, baseStation.distortionCoefficients, outputR, outputT, false, Calib3d.CV_EPNP);
+            Calib3d.solvePnP(_objPoints, _imgPoints, baseStation.cameraMatrix, baseStation.distortionCoefficients, rvecs, tvecs);
+//            Calib3d.solvePnP(_objPoints, _imgPoints, baseStation.cameraMatrix, baseStation.distortionCoefficients, rvecs, tvecs, false, Calib3d.CV_EPNP);
 
-            dataDiscus.rVecs = outputR;
+            dataDiscus.rVecs = rvecs;
 
             Mat rMat = new Mat();
-            Calib3d.Rodrigues(outputR, rMat);
+            Calib3d.Rodrigues(rvecs, rMat);
 
             // Transpose the matrix
 //            rMat = rMat.t();
             dataDiscus.rotationMatrix = rMat;
 
-            // Put rotation matrix to dataDiscus
-            rMat.get(0, 0, dataDiscus.rotationMatrixArray);
+            Mat viewMatrix = new Mat(4, 4, CvType.CV_64FC1);
+//            Mat transferMatrix = new Mat(4, 4, CvType.CV_64FC1);
+            Mat transferMatrix = new Mat(4, 4, CvType.CV_64FC1);
+
+            for(int i = 0; i < 3; i++) {
+
+                for(int j = 0; j < 3; j++) {
+
+                    viewMatrix.put(i, j, rMat.get(i, j));
+
+                }
+
+                viewMatrix.put(i, 3, tvecs.get(i, 0));
+                viewMatrix.put(3, i, 0.0f);
+
+            }
+
+            for(int i = 0; i < 4; i++) {
+
+                for(int j = 0; j < 4; j++) {
+
+                    if (i == 1 || i == 2) {
+
+                        transferMatrix.put(i, j, -1.0f);
+
+                    } else {
+
+                        transferMatrix.put(i, j, 1.0f);
+
+                    }
+
+                }
+
+            }
+
+            Log.i(TAG, "View Matrix " + viewMatrix.dump().toString());
+            Log.i(TAG, "Transfer Matrix " + transferMatrix.dump().toString());
+
+            viewMatrix.put(3, 3, 1.0f);
+
+            viewMatrix.get(0, 0, dataDiscus.rotationMatrixArray);
 
 //            dataDiscus.rotationMatrixArray = (double)rMat.;
 
@@ -262,9 +301,9 @@ public class DataDiscusStreamReader extends Thread {
             double[] yR = new double[1];
             double[] zR = new double[1];
 
-            outputT.get(0, 0, x);
-            outputT.get(1, 0, y);
-            outputT.get(2, 0, z);
+            tvecs.get(0, 0, x);
+            tvecs.get(1, 0, y);
+            tvecs.get(2, 0, z);
 
             rMat.get(0, 0, xR);
             rMat.get(1, 0, yR);

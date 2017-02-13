@@ -77,16 +77,16 @@ public class DataDiscus {
 
     }
 
-    private MatOfPoint3f constructSensorPositions(int corners, double radius, double zOffset) {
+    private MatOfPoint3f constructSensorPositions(int corners, double radius, double offset) {
 
         MatOfPoint3f result = new MatOfPoint3f();
         List<Point3> pointsList = new ArrayList<>();
 
-        double angle = -360.0 / (double)corners;
+        double angle = 360.0 / (double)corners;
 
         for (int i = 0; i < corners; i++) {
 
-            Point3 point = new Point3(Math.cos(Math.toRadians(angle * i)) * radius, Math.sin(Math.toRadians(angle * i)) * radius, zOffset);
+            Point3 point = new Point3(Math.cos(Math.toRadians(angle * i)) * radius, -offset, -Math.sin(Math.toRadians(angle * i)) * radius);
             pointsList.add(point);
             objPointsList.add(point);
 
