@@ -66,6 +66,7 @@ public class DataDiscusStreamReader extends Thread {
 
                 if (flagBuffer[0] == 255 && flagBuffer[1] == 255) {
                     //println("Startflag received");
+//                    Log.i(TAG, inBuffer.toString());
 
                     try {
 
@@ -119,7 +120,7 @@ public class DataDiscusStreamReader extends Thread {
                     int readPos = (i * msgLength) + headerLength;
                     int sensorId = data.get(readPos);
 
-                    LighthouseSensor _sensor = dataDiscus.sensors.get(sensorId - 2);
+                    LighthouseSensor _sensor = dataDiscus.sensors.get(sensorId);
 
                     _sensor.deltaT = (((data.get(readPos + 1) & 0xFF) << 24) | ((data.get(readPos + 2) & 0xFF) << 16) | ((data.get(readPos + 3) & 0xFF) << 8) | (data.get(readPos + 4) & 0xFF));
 
@@ -165,7 +166,8 @@ public class DataDiscusStreamReader extends Thread {
 
                         // Populate the image and object points lists with the sensors that were observed
                         observedImgPointsList.add(point);
-                        observedObjPointsList.add(dataDiscus.objPointsList.get(sensorId - 2));
+//                        observedObjPointsList.add(dataDiscus.objPointsList.get(sensorId - 2));
+                        observedObjPointsList.add(_sensor.position3D);
 
                     }
 
@@ -283,9 +285,6 @@ public class DataDiscusStreamReader extends Thread {
                 }
 
             }
-
-            Log.i(TAG, "View Matrix " + viewMatrix.dump().toString());
-            Log.i(TAG, "Transfer Matrix " + transferMatrix.dump().toString());
 
             viewMatrix.put(3, 3, 1.0f);
 

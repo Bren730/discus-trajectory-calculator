@@ -68,7 +68,7 @@ public class Renderer extends RajawaliRenderer {
         phongMat.enableLighting(true);
         phongMat.setColorInfluence(1);
 
-        LoaderOBJ loaderOBJ = new LoaderOBJ(context.getResources(), mTextureManager, R.raw.discus_high_poly_obj);
+        LoaderOBJ loaderOBJ = new LoaderOBJ(context.getResources(), mTextureManager, R.raw.discus_low_poly_obj);
 
         try {
             loaderOBJ.parse();
