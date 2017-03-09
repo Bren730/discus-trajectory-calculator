@@ -32,7 +32,8 @@ public class DataDiscus {
     public ArrayList<LighthouseSensor> sensors = new ArrayList<>();
 
     // Header metadata length
-    int headerLength = 1;
+    // Consists of 1 byte of metadata and 4 bytes forming the timestamp
+    int headerLength = 1 + 4;
     // Start flag length
     int startFlagLength = 2;
     // Message length for each sensor. 1 Byte indicating sensor id and 4 bytes of timing data

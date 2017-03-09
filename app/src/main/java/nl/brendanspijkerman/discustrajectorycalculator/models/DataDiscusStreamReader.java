@@ -30,7 +30,8 @@ public class DataDiscusStreamReader extends Thread {
     private BaseStation baseStation;
 
     // Header metadata length
-    private int headerLength = 1;
+    // Consists of 1 byte of metadata and 4 bytes forming the timestamp
+    private int headerLength;
     // Start flag length
     private int startFlagLength = 2;
     // Message length for each sensor. 1 Byte indicating sensor id and 4 bytes of timing data
@@ -101,6 +102,7 @@ public class DataDiscusStreamReader extends Thread {
             dataDiscus.resetSensors();
 
             int observedSensorCount = (int) Math.floor((double) (data.size() - headerLength - startFlagLength) / (double) msgLength);
+//            Log.i(TAG, String.valueOf(observedSensorCount));
 
             int meta = data.get(0);
 
@@ -108,7 +110,8 @@ public class DataDiscusStreamReader extends Thread {
             baseStation.rotor = (byte) getBit(meta, 1);
             baseStation.data = (byte) getBit(meta, 0);
 
-            boolean shouldPerformPnPSolve = false;
+            int timeStamp = (((data.get(1) & 0xFF) << 24) | ((data.get(2) & 0xFF) << 16) | ((data.get(3) & 0xFF) << 8) | (data.get(4) & 0xFF));
+//            Log.i(TAG, String.valueOf(timeStamp));
 
             if (observedSensorCount > 0) {
 
@@ -123,6 +126,7 @@ public class DataDiscusStreamReader extends Thread {
                     LighthouseSensor _sensor = dataDiscus.sensors.get(sensorId);
 
                     _sensor.deltaT = (((data.get(readPos + 1) & 0xFF) << 24) | ((data.get(readPos + 2) & 0xFF) << 16) | ((data.get(readPos + 3) & 0xFF) << 8) | (data.get(readPos + 4) & 0xFF));
+                    Log.i(TAG, String.valueOf(_sensor.deltaT));
 
                     double angle = getAngle(_sensor.deltaT);
 
@@ -138,7 +142,6 @@ public class DataDiscusStreamReader extends Thread {
 //                            }
 
                             _sensor.sawSweep = true;
-                            shouldPerformPnPSolve = true;
 
                         }
 
@@ -183,8 +186,17 @@ public class DataDiscusStreamReader extends Thread {
 
 //                Log.i("Solver", observedImgPointsList.toString());
 
+                if (observedSensorCount > 4) {
 
-                return solvePnP(_objPoints, _imgPoints);
+                    // Enough sensor data has been received for a full location update
+                    // Save the timestamp of this sweep
+                    dataDiscus.prevPosTimestamp = dataDiscus.posTimestamp;
+                    dataDiscus.posTimestamp = timeStamp;
+
+                    return solvePnP(_objPoints, _imgPoints);
+                } else {
+                    return null;
+                }
 
             }
 

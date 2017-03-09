@@ -234,7 +234,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                         try {
                             renderer.discus.setPosition(xPos, yPos, zPos);
                             Matrix4 mat = new Matrix4(dataDiscus.rotationMatrixArray);
-//                            renderer.discus.setRotation(mat);
+                            renderer.discus.setRotation(mat);
 
 
 //                            renderer.discus.setRotation(xRot, yRot, zRot);
