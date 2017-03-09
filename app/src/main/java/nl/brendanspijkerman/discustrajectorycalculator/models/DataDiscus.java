@@ -101,8 +101,6 @@ public class DataDiscus {
 
     public void setPosition(double pos[]) {
 
-        prevPosTimestamp = posTimestamp;
-        posTimestamp = System.currentTimeMillis();
         long timeDiff = posTimestamp - prevPosTimestamp;
 
         Position newPosition = new Position(pos, posTimestamp);

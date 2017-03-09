@@ -1,6 +1,7 @@
 package nl.brendanspijkerman.discustrajectorycalculator.activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 
 import android.bluetooth.BluetoothDevice;
@@ -23,6 +24,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +59,7 @@ import nl.brendanspijkerman.discustrajectorycalculator.Renderer;
 import nl.brendanspijkerman.discustrajectorycalculator.models.BaseStation;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscus;
 import nl.brendanspijkerman.discustrajectorycalculator.models.DataDiscusStreamReader;
+import nl.brendanspijkerman.discustrajectorycalculator.models.Position;
 
 import static org.opencv.core.CvType.CV_64FC1;
 
@@ -118,7 +122,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
         final int delay = 1000;
 
-        // Update the UI TextViews every X milliseconds
+        // Start Bluetooth device discovery 1 second after scene is loaded
         final Handler h = new Handler();
         h.postDelayed(new Runnable()
         {
@@ -199,8 +203,6 @@ public class DiscusTrackerActivity extends AppCompatActivity {
             {
 
                 try {
-
-                    int b = 0;
 
                     String x = String.format("%.2f", dataDiscus.positions.get(0).coordinates[0]);
                     String y = String.format("%.2f", dataDiscus.positions.get(0).coordinates[1]);
@@ -326,7 +328,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
 
                         final int delay = 4000;
 
-                        // Update the UI TextViews every X milliseconds
+                        // Remove mProgressbar from view
                         final Handler h = new Handler();
                         h.postDelayed(new Runnable()
                         {
@@ -340,7 +342,7 @@ public class DiscusTrackerActivity extends AppCompatActivity {
                                 mProgressBarTextView.setVisibility(View.GONE);
 
                             }
-                        }, delay); // 1 second delay (takes millis)
+                        }, delay);
 
                         try {
 
@@ -423,6 +425,47 @@ public class DiscusTrackerActivity extends AppCompatActivity {
             }
 
         }
+
+    }
+
+    public void saveThrow(View view) {
+
+        Log.i(TAG, "Saving throw");
+        Log.i(TAG, dataDiscus.positions.toString());
+
+        String output = "";
+
+        try {
+            for (int i = 0; i < 120 * 5; i++) {
+
+                Position pos = dataDiscus.positions.get(i);
+
+                Log.i(TAG, "pos");
+
+                output += String.valueOf(pos.coordinates[0]) + ";";
+                output += String.valueOf(pos.coordinates[1]) + ";";
+                output += String.valueOf(pos.coordinates[2]) + ";";
+                output += String.valueOf(pos.timestamp) + "\n";
+
+            }
+        } catch (Exception e) {
+
+            Log.e(TAG, e.toString());
+        }
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        alertDialog.setTitle("Throwing data");
+
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(output);
+        alertDialog.setView(input);
+
+        alertDialog.show();
 
     }
 

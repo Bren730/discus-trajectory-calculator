@@ -29,6 +29,7 @@
     <string name="add_athlete">Add Athlete</string>
     <string name="trajectory_analyzer">Trajectory Analyzer</string>
     <string name="next">Next</string>
+    <string name="save">Save</string>
 
     <!--New athlete fields-->
     <string name="new_athlete_name">Name</string>

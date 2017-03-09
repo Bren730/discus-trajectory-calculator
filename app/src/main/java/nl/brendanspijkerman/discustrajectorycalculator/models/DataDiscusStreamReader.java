@@ -126,7 +126,7 @@ public class DataDiscusStreamReader extends Thread {
                     LighthouseSensor _sensor = dataDiscus.sensors.get(sensorId);
 
                     _sensor.deltaT = (((data.get(readPos + 1) & 0xFF) << 24) | ((data.get(readPos + 2) & 0xFF) << 16) | ((data.get(readPos + 3) & 0xFF) << 8) | (data.get(readPos + 4) & 0xFF));
-                    Log.i(TAG, String.valueOf(_sensor.deltaT));
+//                    Log.i(TAG, String.valueOf(_sensor.deltaT));
 
                     double angle = getAngle(_sensor.deltaT);
 
